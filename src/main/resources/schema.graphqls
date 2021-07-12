@@ -1,16 +1,10 @@
 type Query {
-  bookById(id: ID): Book
+  taskDetailsById(id: ID): TaskDetails
 }
 
-type Book {
-  id: ID
-  name: String
-  pageCount: Int
-  author: Author
-}
-
-type Author {
-  id: ID
-  firstName: String
-  lastName: String
+type TaskDetails {
+  task_id: ID
+  description: String
+  interval_km: Int
+  interval_months: Int
 }
