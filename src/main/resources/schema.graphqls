@@ -1,10 +1,15 @@
 type Query {
-  taskDetailsById(id: ID): TaskDetails
+    taskDetailsById(task_id: ID): TaskDetails
+}
+
+type Mutation {
+    createTaskDetails(description: String, interval_km: Int, interval_months: Int): TaskDetails
+    deleteTaskDetails(task_id: ID): Boolean
 }
 
 type TaskDetails {
-  task_id: ID
-  description: String
-  interval_km: Int
-  interval_months: Int
+    task_id: ID
+    description: String
+    interval_km: Int
+    interval_months: Int
 }

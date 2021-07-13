@@ -18,4 +18,12 @@ public class TaskDetailsService {
     public Optional<TaskDetails> findDetails(Integer id) {
         return repository.findById(id);
     }
+
+    public TaskDetails create(TaskDetails taskDetails) {
+        return repository.save(taskDetails);
+    }
+
+    public void delete(Integer id) {
+        repository.deleteById(id);
+    }
 }

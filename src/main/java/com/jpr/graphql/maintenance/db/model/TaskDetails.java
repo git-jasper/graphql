@@ -1,7 +1,10 @@
 package com.jpr.graphql.maintenance.db.model;
 
+import graphql.schema.DataFetchingEnvironment;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -10,17 +13,25 @@ import javax.persistence.Table;
 public class TaskDetails {
 
     @Id
-    @GeneratedValue()
-    private int task_id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer task_id;
     private String description;
     private int interval_km;
     private int interval_months;
 
-    public int getTask_id() {
+    public TaskDetails(){}
+
+    private TaskDetails(String description, int interval_km, int interval_months) {
+        this.description = description;
+        this.interval_km = interval_km;
+        this.interval_months = interval_months;
+    }
+
+    public Integer getTask_id() {
         return task_id;
     }
 
-    public void setTask_id(int task_id) {
+    public void setTask_id(Integer task_id) {
         this.task_id = task_id;
     }
 
@@ -46,5 +57,13 @@ public class TaskDetails {
 
     public void setInterval_months(int interval_months) {
         this.interval_months = interval_months;
+    }
+
+    public static TaskDetails of (DataFetchingEnvironment environment) {
+        return new TaskDetails(
+            environment.getArgument("description"),
+            environment.getArgument("interval_km"),
+            environment.getArgument("interval_months")
+        );
     }
 }
