@@ -3,7 +3,7 @@ type Query {
 }
 
 type Mutation {
-    createTaskDetails(description: String, interval_km: Int, interval_months: Int): TaskDetails
+    createTaskDetails(description: String!, interval_km: Int!, interval_months: Int!): TaskDetails
     deleteTaskDetails(task_id: ID): Boolean
 }
 
