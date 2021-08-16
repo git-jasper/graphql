@@ -23,7 +23,7 @@ public class TaskDetails {
     private Integer interval_km;
     private Integer interval_months;
 
-    public TaskDetails(){}
+    public TaskDetails() {}
 
     private TaskDetails(String description, Integer interval_km, Integer interval_months) {
         this.description = description;

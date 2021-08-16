@@ -17,21 +17,21 @@ public class GraphQLDataFetchers {
     public DataFetcher<TaskDetails> getTaskDetailsIdDataFetcher() {
         return dataFetchingEnvironment -> {
             String taskId = dataFetchingEnvironment.getArgument("task_id");
-            return service.findDetails(Integer.valueOf(taskId)).stream().findFirst().orElse(null);
+            return service.findById(Integer.valueOf(taskId)).stream().findFirst().orElse(null);
         };
     }
 
     public DataFetcher<TaskDetails> createTaskDetails() {
         return dataFetchingEnvironment -> {
             TaskDetails taskDetails = TaskDetails.of(dataFetchingEnvironment);
-            return service.create(taskDetails);
+            return service.save(taskDetails);
         };
     }
 
     public DataFetcher<Boolean> deleteTaskDetails() {
         return dataFetchingEnvironment -> {
             String task_id = dataFetchingEnvironment.getArgument("task_id");
-            service.delete(Integer.valueOf(task_id));
+            service.deleteById(Integer.valueOf(task_id));
             return null;
         };
     }

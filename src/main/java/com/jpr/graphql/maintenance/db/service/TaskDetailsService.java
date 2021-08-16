@@ -15,15 +15,15 @@ public class TaskDetailsService {
         this.repository = repository;
     }
 
-    public Optional<TaskDetails> findDetails(Integer id) {
+    public Optional<TaskDetails> findById(Integer id) {
         return repository.findById(id);
     }
 
-    public TaskDetails create(TaskDetails taskDetails) {
+    public TaskDetails save(TaskDetails taskDetails) {
         return repository.save(taskDetails);
     }
 
-    public void delete(Integer id) {
+    public void deleteById(Integer id) {
         repository.deleteById(id);
     }
 }
