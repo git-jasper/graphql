@@ -1,9 +1,11 @@
 ##GraphQL application using Spring boot and PostgresQL
 
-- Start PostgresQL docker container, see [here](postgresql/README.md)
-- If needed alter properties [here](src/main/resources/application.properties)
+- Start PostgresQL docker container, see [README](postgresql/README.md)
+- If needed alter [application.properties](src/main/resources/application.properties)
 - Start application from IDE or using `mvn spring-boot:run`
 - Use tool like GraphQL playground to query application on `http://localhost:8080/graphql`
+
+- For more information on graphql-java see [documentation](https://www.graphql-java.com/documentation/) 
 
 ##Example queries
 
