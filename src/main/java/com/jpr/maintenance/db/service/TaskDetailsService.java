@@ -1,7 +1,7 @@
-package com.jpr.graphql.maintenance.db.service;
+package com.jpr.maintenance.db.service;
 
-import com.jpr.graphql.maintenance.db.model.TaskDetails;
-import com.jpr.graphql.maintenance.db.repository.TaskDetailsRepository;
+import com.jpr.maintenance.db.model.TaskDetails;
+import com.jpr.maintenance.db.repository.TaskDetailsRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

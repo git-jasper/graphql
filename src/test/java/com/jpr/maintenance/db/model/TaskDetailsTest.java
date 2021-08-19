@@ -1,4 +1,4 @@
-package com.jpr.graphql.maintenance.db.model;
+package com.jpr.maintenance.db.model;
 
 import graphql.schema.DataFetchingEnvironmentImpl;
 import org.junit.jupiter.api.Test;

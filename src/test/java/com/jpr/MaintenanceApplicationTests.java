@@ -1,10 +1,10 @@
-package com.jpr.graphql;
+package com.jpr;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class GraphqlApplicationTests {
+class MaintenanceApplicationTests {
 
 	@Test
 	void contextLoads() {

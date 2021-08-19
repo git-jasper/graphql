@@ -1,7 +1,7 @@
-package com.jpr.graphql.maintenance.db.testing;
+package com.jpr.maintenance.db.testing;
 
-import com.jpr.graphql.maintenance.db.model.TaskDetails;
-import com.jpr.graphql.maintenance.db.repository.TaskDetailsRepository;
+import com.jpr.maintenance.db.model.TaskDetails;
+import com.jpr.maintenance.db.repository.TaskDetailsRepository;
 
 import java.util.Optional;
 

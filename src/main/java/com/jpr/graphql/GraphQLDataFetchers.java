@@ -1,7 +1,7 @@
 package com.jpr.graphql;
 
-import com.jpr.graphql.maintenance.db.model.TaskDetails;
-import com.jpr.graphql.maintenance.db.service.TaskDetailsService;
+import com.jpr.maintenance.db.model.TaskDetails;
+import com.jpr.maintenance.db.service.TaskDetailsService;
 import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
