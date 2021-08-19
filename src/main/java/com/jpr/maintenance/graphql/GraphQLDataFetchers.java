@@ -6,7 +6,7 @@ import graphql.schema.DataFetcher;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GraphQLDataFetchers {
+public class GraphQLDataFetchers { // TODO validate environment arguments to prevent/hanle exceptions
 
     private final TaskDetailsService service;
 
@@ -14,7 +14,7 @@ public class GraphQLDataFetchers {
         this.service = service;
     }
 
-    public DataFetcher<TaskDetails> getTaskDetailsIdDataFetcher() {
+    public DataFetcher<TaskDetails> getTaskDetailsById() {
         return dataFetchingEnvironment -> {
             String taskId = dataFetchingEnvironment.getArgument("task_id");
             return service.findById(Integer.valueOf(taskId)).stream().findFirst().orElse(null);
@@ -28,7 +28,7 @@ public class GraphQLDataFetchers {
         };
     }
 
-    public DataFetcher<Boolean> deleteTaskDetails() {
+    public DataFetcher<Void> deleteTaskDetails() { //TODO is there a better way than return type Void?
         return dataFetchingEnvironment -> {
             String task_id = dataFetchingEnvironment.getArgument("task_id");
             service.deleteById(Integer.valueOf(task_id));

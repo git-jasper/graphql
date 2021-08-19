@@ -43,7 +43,7 @@ public class GraphQLProvider {
     private RuntimeWiring buildWiring() {
         return RuntimeWiring.newRuntimeWiring()
             .type(newTypeWiring("Query")
-                .dataFetcher("taskDetailsById", graphQLDataFetchers.getTaskDetailsIdDataFetcher()))
+                .dataFetcher("taskDetailsById", graphQLDataFetchers.getTaskDetailsById()))
             .type(newTypeWiring("Mutation")
                 .dataFetcher("createTaskDetails", graphQLDataFetchers.createTaskDetails()))
             .type(newTypeWiring("Mutation")

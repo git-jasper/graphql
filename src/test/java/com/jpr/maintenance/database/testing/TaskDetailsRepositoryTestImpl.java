@@ -21,6 +21,9 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
 
     @Override
     public Optional<TaskDetails> findById(Integer integer) {
+        if (integer >= 0) {
+            return Optional.of(new TaskDetails());
+        }
         return Optional.empty();
     }
 
