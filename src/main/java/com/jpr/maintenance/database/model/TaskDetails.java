@@ -30,7 +30,7 @@ public class TaskDetails {
     }
 
     public static TaskDetails of(DataFetchingEnvironment environment) {
-        return new TaskDetails(
+        return new TaskDetails( // TODO move argument fetching and validation to GraphQLDataFetchers
             environment.getArgument("description"),
             environment.getArgument("interval_km"),
             environment.getArgument("interval_months")
