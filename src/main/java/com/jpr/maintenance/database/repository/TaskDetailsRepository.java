@@ -1,6 +1,6 @@
-package com.jpr.maintenance.db.repository;
+package com.jpr.maintenance.database.repository;
 
-import com.jpr.maintenance.db.model.TaskDetails;
+import com.jpr.maintenance.database.model.TaskDetails;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

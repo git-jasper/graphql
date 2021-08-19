@@ -1,7 +1,7 @@
-package com.jpr.maintenance.db.testing;
+package com.jpr.maintenance.database.testing;
 
-import com.jpr.maintenance.db.model.TaskDetails;
-import com.jpr.maintenance.db.repository.TaskDetailsRepository;
+import com.jpr.maintenance.database.model.TaskDetails;
+import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.jpr.graphql;
+package com.jpr.maintenance.graphql;
 
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;

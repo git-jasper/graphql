@@ -1,8 +1,8 @@
-package com.jpr.maintenance.db.service;
+package com.jpr.maintenance.database.service;
 
-import com.jpr.maintenance.db.model.TaskDetails;
-import com.jpr.maintenance.db.repository.TaskDetailsRepository;
-import com.jpr.maintenance.db.testing.TaskDetailsRepositoryTestImpl;
+import com.jpr.maintenance.database.model.TaskDetails;
+import com.jpr.maintenance.database.repository.TaskDetailsRepository;
+import com.jpr.maintenance.database.testing.TaskDetailsRepositoryTestImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

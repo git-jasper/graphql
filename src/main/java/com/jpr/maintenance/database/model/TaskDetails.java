@@ -1,4 +1,4 @@
-package com.jpr.maintenance.db.model;
+package com.jpr.maintenance.database.model;
 
 import graphql.schema.DataFetchingEnvironment;
 import lombok.Getter;
