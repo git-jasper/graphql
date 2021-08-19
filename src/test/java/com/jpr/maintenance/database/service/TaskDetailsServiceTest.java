@@ -14,8 +14,13 @@ class TaskDetailsServiceTest {
     private final TaskDetailsService service = new TaskDetailsService(repository);
 
     @Test
-    void findDetails() {
-        assertTrue(service.findById(0).isEmpty());
+    void findDetailsByIdOk() {
+        assertTrue(service.findById(0).isPresent());
+    }
+
+    @Test
+    void findDetailsByIdEmpty() {
+        assertTrue(service.findById(-1).isEmpty());
     }
 
     @Test

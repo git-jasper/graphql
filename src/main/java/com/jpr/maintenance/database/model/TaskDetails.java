@@ -2,7 +2,6 @@ package com.jpr.maintenance.database.model;
 
 import graphql.schema.DataFetchingEnvironment;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +12,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "task_details")
 @Getter
-@Setter
 public class TaskDetails {
 
     @Id
