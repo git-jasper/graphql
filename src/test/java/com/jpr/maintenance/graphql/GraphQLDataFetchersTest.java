@@ -1,6 +1,6 @@
 package com.jpr.maintenance.graphql;
 
-import com.jpr.maintenance.database.model.TaskDetails;
+import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 import com.jpr.maintenance.database.service.TaskDetailsService;
 import com.jpr.maintenance.database.testing.TaskDetailsRepositoryTestImpl;
@@ -25,8 +25,8 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<TaskDetails> dataFetcher = graphQLDataFetchers.getTaskDetailsById();
-        TaskDetails taskDetails = dataFetcher.get(environment);
+        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById();
+        TaskDetailsEntity taskDetails = dataFetcher.get(environment);
 
         assertNotNull(taskDetails);
     }
@@ -37,17 +37,24 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<TaskDetails> dataFetcher = graphQLDataFetchers.getTaskDetailsById();
-        TaskDetails taskDetails = dataFetcher.get(environment);
+        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById();
+        TaskDetailsEntity taskDetails = dataFetcher.get(environment);
 
         assertNull(taskDetails);
     }
 
     @Test
     void createTaskDetailsOk() throws Exception {
-        var environment = new DataFetchingEnvironmentImpl.Builder().build();
-        DataFetcher<TaskDetails> dataFetcher = graphQLDataFetchers.createTaskDetails();
-        TaskDetails taskDetails = dataFetcher.get(environment);
+        Map<String, Object> arguments = Map.of(
+            "description", "description",
+            "interval_km", 5000,
+            "interval_months", 48
+        );
+        var environment = new DataFetchingEnvironmentImpl.Builder()
+            .arguments(arguments)
+            .build();
+        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.createTaskDetails();
+        TaskDetailsEntity taskDetails = dataFetcher.get(environment);
 
         assertNotNull(taskDetails);
     }

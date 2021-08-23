@@ -1,6 +1,6 @@
 package com.jpr.maintenance.database.model;
 
-import graphql.schema.DataFetchingEnvironment;
+import com.jpr.maintenance.validation.model.taskdetails.TaskDetails;
 import lombok.Getter;
 
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "task_details")
 @Getter
-public class TaskDetails {
+public class TaskDetailsEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,19 +21,19 @@ public class TaskDetails {
     private Integer interval_km;
     private Integer interval_months;
 
-    public TaskDetails() {}
+    public TaskDetailsEntity() {}
 
-    private TaskDetails(String description, Integer interval_km, Integer interval_months) {
+    private TaskDetailsEntity(String description, Integer interval_km, Integer interval_months) {
         this.description = description;
         this.interval_km = interval_km;
         this.interval_months = interval_months;
     }
 
-    public static TaskDetails of(DataFetchingEnvironment environment) {
-        return new TaskDetails( // TODO move argument fetching and validation to GraphQLDataFetchers
-            environment.getArgument("description"),
-            environment.getArgument("interval_km"),
-            environment.getArgument("interval_months")
+    public static TaskDetailsEntity of(TaskDetails taskDetails) {
+        return new TaskDetailsEntity(
+            taskDetails.getDescription(),
+            taskDetails.getInterval_km(),
+            taskDetails.getInterval_months()
         );
     }
 }

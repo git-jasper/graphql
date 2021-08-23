@@ -1,6 +1,6 @@
 package com.jpr.maintenance.database.service;
 
-import com.jpr.maintenance.database.model.TaskDetails;
+import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 import com.jpr.maintenance.database.testing.TaskDetailsRepositoryTestImpl;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ class TaskDetailsServiceTest {
 
     @Test
     void create() {
-        TaskDetails details = new TaskDetails();
+        TaskDetailsEntity details = new TaskDetailsEntity();
         assertEquals(details, service.save(details));
     }
 }

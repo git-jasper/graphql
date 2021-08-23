@@ -1,6 +1,6 @@
 package com.jpr.maintenance.database.service;
 
-import com.jpr.maintenance.database.model.TaskDetails;
+import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +15,11 @@ public class TaskDetailsService { // TODO better name than ...service ?
         this.repository = repository;
     }
 
-    public Optional<TaskDetails> findById(Integer id) {
+    public Optional<TaskDetailsEntity> findById(Integer id) {
         return repository.findById(id);
     }
 
-    public TaskDetails save(TaskDetails taskDetails) {
+    public TaskDetailsEntity save(TaskDetailsEntity taskDetails) {
         return repository.save(taskDetails);
     }
 

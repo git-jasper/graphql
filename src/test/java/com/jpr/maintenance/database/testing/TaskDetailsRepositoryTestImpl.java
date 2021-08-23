@@ -1,6 +1,6 @@
 package com.jpr.maintenance.database.testing;
 
-import com.jpr.maintenance.database.model.TaskDetails;
+import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 
 import java.util.Optional;
@@ -10,19 +10,19 @@ import static java.util.Collections.singleton;
 public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
 
     @Override
-    public <S extends TaskDetails> S save(S s) {
+    public <S extends TaskDetailsEntity> S save(S s) {
         return s;
     }
 
     @Override
-    public <S extends TaskDetails> Iterable<S> saveAll(Iterable<S> iterable) {
+    public <S extends TaskDetailsEntity> Iterable<S> saveAll(Iterable<S> iterable) {
         return iterable;
     }
 
     @Override
-    public Optional<TaskDetails> findById(Integer integer) {
+    public Optional<TaskDetailsEntity> findById(Integer integer) {
         if (integer >= 0) {
-            return Optional.of(new TaskDetails());
+            return Optional.of(new TaskDetailsEntity());
         }
         return Optional.empty();
     }
@@ -33,13 +33,13 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public Iterable<TaskDetails> findAll() {
-        return singleton(new TaskDetails());
+    public Iterable<TaskDetailsEntity> findAll() {
+        return singleton(new TaskDetailsEntity());
     }
 
     @Override
-    public Iterable<TaskDetails> findAllById(Iterable<Integer> iterable) {
-        return singleton(new TaskDetails());
+    public Iterable<TaskDetailsEntity> findAllById(Iterable<Integer> iterable) {
+        return singleton(new TaskDetailsEntity());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public void delete(TaskDetails taskDetails) {
+    public void delete(TaskDetailsEntity taskDetails) {
 
     }
 
@@ -63,7 +63,7 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public void deleteAll(Iterable<? extends TaskDetails> iterable) {
+    public void deleteAll(Iterable<? extends TaskDetailsEntity> iterable) {
 
     }
 
