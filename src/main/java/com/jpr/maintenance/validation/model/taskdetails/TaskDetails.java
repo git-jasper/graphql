@@ -7,10 +7,13 @@ import lombok.Getter;
 
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 @Getter
 public class TaskDetails {
 
     private static final Pattern descriptionWhitelist = Pattern.compile("[a-zA-Z ]{1,100}");
+    private static final Pattern integerWhitelist = Pattern.compile("\\d{1,10}");
 
     private final String description;
     private final Integer interval_km;
@@ -24,14 +27,21 @@ public class TaskDetails {
 
     public static Either<InputValidationError, TaskDetails> of(DataFetchingEnvironment environment) {
         final String description = environment.getArgument("description");
-        boolean validDescription = descriptionWhitelist.matcher(description).matches();
-        if (!validDescription) {
+        if (!descriptionWhitelist.matcher(description).matches()) {
             return Either.left(InputValidationError.INVALID_DESCRIPTION);
+        }
+        String interval_km = environment.getArgument("interval_km"); 
+        if (!integerWhitelist.matcher(interval_km).matches()) {
+            return Either.left(InputValidationError.INVALID_INTERVAL_KM);
+        }
+        String interval_months = environment.getArgument("interval_months");
+        if (!integerWhitelist.matcher(interval_km).matches()) {
+            return Either.left(InputValidationError.INVALID_INTERVAL_MONTHS);
         }
         return Either.right(new TaskDetails(
             description,
-            environment.getArgument("interval_km"),
-            environment.getArgument("interval_months")
+            parseInt(interval_km),
+            parseInt(interval_months)
         ));
     }
 
