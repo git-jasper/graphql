@@ -18,8 +18,8 @@ class TaskDetailsTest {
         final String description = "HundredCharacterString    HundredCharacterString    HundredCharacterString    HundredCharacterString";
         Map<String, Object> arguments = Map.of(
             "description", description,
-            "interval_km", "5000",
-            "interval_months", "48"
+            "interval_km", 5000,
+            "interval_months", 48
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)

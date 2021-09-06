@@ -7,8 +7,6 @@ import lombok.Getter;
 
 import java.util.regex.Pattern;
 
-import static java.lang.Integer.parseInt;
-
 @Getter
 public class TaskDetails {
 
@@ -30,18 +28,12 @@ public class TaskDetails {
         if (!descriptionWhitelist.matcher(description).matches()) {
             return Either.left(InputValidationError.INVALID_DESCRIPTION);
         }
-        String interval_km = environment.getArgument("interval_km"); 
-        if (!integerWhitelist.matcher(interval_km).matches()) {
-            return Either.left(InputValidationError.INVALID_INTERVAL_KM);
-        }
-        String interval_months = environment.getArgument("interval_months");
-        if (!integerWhitelist.matcher(interval_km).matches()) {
-            return Either.left(InputValidationError.INVALID_INTERVAL_MONTHS);
-        }
+        Integer interval_km = environment.getArgument("interval_km");
+        Integer interval_months = environment.getArgument("interval_months");
         return Either.right(new TaskDetails(
             description,
-            parseInt(interval_km),
-            parseInt(interval_months)
+            interval_km,
+            interval_months
         ));
     }
 
