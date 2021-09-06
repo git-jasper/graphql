@@ -4,14 +4,18 @@ import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 import com.jpr.maintenance.database.service.TaskDetailsService;
 import com.jpr.maintenance.database.testing.TaskDetailsRepositoryTestImpl;
+import com.jpr.maintenance.validation.model.taskdetails.TaskDetails;
+import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GraphQLDataFetchersTest {
 
@@ -53,10 +57,28 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.createTaskDetails();
-        TaskDetailsEntity taskDetails = dataFetcher.get(environment);
+        DataFetcher<DataFetcherResult<TaskDetails>> dataFetcher = graphQLDataFetchers.createTaskDetails();
+        DataFetcherResult<TaskDetails> dataFetcherResult = dataFetcher.get(environment);
+        TaskDetails resultData = dataFetcherResult.getData();
 
-        assertNotNull(taskDetails);
+        assertEquals("description", resultData.getDescription());
+        assertEquals(5000, resultData.getInterval_km());
+        assertEquals(48, resultData.getInterval_months());
+        assertTrue(dataFetcherResult.getErrors().isEmpty());
+    }
+
+    @Test
+    void createTaskDetailsUnhappyFlow() throws Exception {
+        Map<String, Object> arguments = Map.of(
+            "description", "132"
+        );
+        var environment = new DataFetchingEnvironmentImpl.Builder()
+            .arguments(arguments)
+            .build();
+        DataFetcher<DataFetcherResult<TaskDetails>> dataFetcher = graphQLDataFetchers.createTaskDetails();
+        DataFetcherResult<TaskDetails> dataFetcherResult = dataFetcher.get(environment);
+
+        assertNull(dataFetcherResult.getData());
     }
 
     @Test
