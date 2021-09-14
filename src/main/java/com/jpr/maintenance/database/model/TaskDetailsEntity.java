@@ -1,6 +1,7 @@
 package com.jpr.maintenance.database.model;
 
 import com.jpr.maintenance.validation.model.taskdetails.TaskDetails;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@EqualsAndHashCode
 @ToString
 @NoArgsConstructor
 @Entity
