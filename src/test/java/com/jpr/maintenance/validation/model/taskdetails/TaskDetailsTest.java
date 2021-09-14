@@ -1,6 +1,7 @@
 package com.jpr.maintenance.validation.model.taskdetails;
 
 import com.jpr.maintenance.validation.errors.InputValidationError;
+import graphql.GraphQLError;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ class TaskDetailsTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        Either<InputValidationError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
 
         assertTrue(taskDetailsEither.isRight());
         TaskDetails taskDetails = taskDetailsEither.get();
@@ -43,10 +44,10 @@ class TaskDetailsTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        Either<InputValidationError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft());
+        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
     }
 
     @Test
@@ -59,10 +60,10 @@ class TaskDetailsTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        Either<InputValidationError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft());
+        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
     }
 
     @Test
@@ -75,9 +76,9 @@ class TaskDetailsTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        Either<InputValidationError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft());
+        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
     }
 }

@@ -29,7 +29,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById();
+        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById().getDataFetcher();
         TaskDetailsEntity taskDetails = dataFetcher.get(environment);
 
         assertNotNull(taskDetails);
@@ -41,7 +41,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById();
+        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById().getDataFetcher();
         TaskDetailsEntity taskDetails = dataFetcher.get(environment);
 
         assertNull(taskDetails);
@@ -57,9 +57,9 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<DataFetcherResult<TaskDetails>> dataFetcher = graphQLDataFetchers.createTaskDetails();
-        DataFetcherResult<TaskDetails> dataFetcherResult = dataFetcher.get(environment);
-        TaskDetails resultData = dataFetcherResult.getData();
+        DataFetcher<DataFetcherResult<TaskDetailsEntity>> dataFetcher = graphQLDataFetchers.createTaskDetails().getDataFetcher();
+        DataFetcherResult<TaskDetailsEntity> dataFetcherResult = dataFetcher.get(environment);
+        TaskDetailsEntity resultData = dataFetcherResult.getData();
 
         assertEquals("description", resultData.getDescription());
         assertEquals(5000, resultData.getInterval_km());
@@ -75,8 +75,8 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<DataFetcherResult<TaskDetails>> dataFetcher = graphQLDataFetchers.createTaskDetails();
-        DataFetcherResult<TaskDetails> dataFetcherResult = dataFetcher.get(environment);
+        DataFetcher<DataFetcherResult<TaskDetailsEntity>> dataFetcher = graphQLDataFetchers.createTaskDetails().getDataFetcher();
+        DataFetcherResult<TaskDetailsEntity> dataFetcherResult = dataFetcher.get(environment);
 
         assertNull(dataFetcherResult.getData());
     }
@@ -87,7 +87,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<Void> dataFetcher = graphQLDataFetchers.deleteTaskDetails();
+        DataFetcher<Void> dataFetcher = graphQLDataFetchers.deleteTaskDetails().getDataFetcher();
         Void unused = dataFetcher.get(environment);
 
         assertNull(unused);
