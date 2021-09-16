@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
+import static com.jpr.maintenance.graphql.GraphQLUtils.*;
 
 @RequiredArgsConstructor
 @Configuration
@@ -40,8 +40,8 @@ public class GraphQLDataFetchers {
                         TaskDetails.of(dataFetchingEnvironment)
                                 .flatMap(t -> saveTaskDetails(t, dataFetchingEnvironment))
                                 .fold(
-                                        l -> DataFetcherResult.<TaskDetailsEntity>newResult().error(l).build(),
-                                        r -> DataFetcherResult.<TaskDetailsEntity>newResult().data(r).build()
+                                        errorFun(),
+                                        successFun()
                                 )
         );
     }
