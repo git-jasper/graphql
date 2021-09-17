@@ -4,7 +4,6 @@ import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
 import com.jpr.maintenance.database.service.TaskDetailsService;
 import com.jpr.maintenance.database.testing.TaskDetailsRepositoryTestImpl;
-import com.jpr.maintenance.validation.model.taskdetails.TaskDetails;
 import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironmentImpl;
@@ -12,10 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GraphQLDataFetchersTest {
 

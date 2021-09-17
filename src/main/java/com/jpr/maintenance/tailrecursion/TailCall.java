@@ -9,14 +9,16 @@ public interface TailCall<T> {
     default boolean isComplete() {
         return false;
     }
+
     default T result() {
         throw new Error("not implemented");
     }
+
     default T invoke() {
         return Stream.iterate(this, TailCall::apply)
-                .filter(TailCall::isComplete)
-                .findFirst()
-                .get()
-                .result();
+            .filter(TailCall::isComplete)
+            .findFirst()
+            .get()
+            .result();
     }
 }

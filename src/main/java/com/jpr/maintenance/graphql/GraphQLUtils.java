@@ -17,10 +17,10 @@ public class GraphQLUtils {
             return Either.right(persistenceFun.apply(entity));
         } catch (DataAccessException e) {
             return Either.left(
-                    GraphqlErrorBuilder
-                            .newError(environment)
-                            .errorType(DATA_PERSISTENCE_ERROR)
-                            .build()
+                GraphqlErrorBuilder
+                    .newError(environment)
+                    .errorType(DATA_PERSISTENCE_ERROR)
+                    .build()
             );
         }
     }

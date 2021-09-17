@@ -22,27 +22,27 @@ public class GraphQLDataFetchers {
     @Bean
     public DataFetcherWrapper<TaskDetailsEntity> getTaskDetailsById() {
         return new DataFetcherWrapper<>(
-                "Query",
-                "taskDetailsById",
-                dataFetchingEnvironment -> {
-                    String taskId = dataFetchingEnvironment.getArgument("task_id");
-                    return service.findById(Integer.valueOf(taskId)).stream().findFirst().orElse(null);
-                }
+            "Query",
+            "taskDetailsById",
+            dataFetchingEnvironment -> {
+                String taskId = dataFetchingEnvironment.getArgument("task_id");
+                return service.findById(Integer.valueOf(taskId)).stream().findFirst().orElse(null);
+            }
         );
     }
 
     @Bean
     public DataFetcherWrapper<DataFetcherResult<TaskDetailsEntity>> createTaskDetails() {
         return new DataFetcherWrapper<>(
-                "Mutation",
-                "createTaskDetails",
-                dataFetchingEnvironment ->
-                        TaskDetails.of(dataFetchingEnvironment)
-                                .flatMap(t -> saveTaskDetails(t, dataFetchingEnvironment))
-                                .fold(
-                                        errorFun(),
-                                        successFun()
-                                )
+            "Mutation",
+            "createTaskDetails",
+            dataFetchingEnvironment ->
+                TaskDetails.of(dataFetchingEnvironment)
+                    .flatMap(t -> saveTaskDetails(t, dataFetchingEnvironment))
+                    .fold(
+                        errorFun(),
+                        successFun()
+                    )
         );
     }
 
@@ -54,13 +54,13 @@ public class GraphQLDataFetchers {
     @Bean
     public DataFetcherWrapper<Void> deleteTaskDetails() {
         return new DataFetcherWrapper<>(
-                "Mutation",
-                "deleteTaskDetails",
-                dataFetchingEnvironment -> {
-                    String task_id = dataFetchingEnvironment.getArgument("task_id");
-                    service.deleteById(Integer.valueOf(task_id));
-                    return null;
-                }
+            "Mutation",
+            "deleteTaskDetails",
+            dataFetchingEnvironment -> {
+                String task_id = dataFetchingEnvironment.getArgument("task_id");
+                service.deleteById(Integer.valueOf(task_id));
+                return null;
+            }
         );
     }
 }

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Pattern;
+
 @RequiredArgsConstructor
 @Getter
 public class TaskDetails {
@@ -24,10 +25,10 @@ public class TaskDetails {
         final String description = environment.getArgument("description");
         if (!descriptionWhitelist.matcher(description).matches()) {
             return Either.left(
-                    GraphqlErrorBuilder.newError()
-                            .errorType(InputValidationError.INVALID_DESCRIPTION)
-                            .message("The description must consist of only letters and spaces, between 1 and 100 characters long.")
-                            .build()
+                GraphqlErrorBuilder.newError()
+                    .errorType(InputValidationError.INVALID_DESCRIPTION)
+                    .message("The description must consist of only letters and spaces, between 1 and 100 characters long.")
+                    .build()
             );
         }
         Integer interval_km = environment.getArgument("interval_km");
