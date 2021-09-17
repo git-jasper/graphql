@@ -2,10 +2,12 @@ package com.jpr.maintenance.database.service;
 
 import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.repository.TaskDetailsRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class TaskDetailsService { // TODO better name than ...service ?
 
@@ -20,7 +22,9 @@ public class TaskDetailsService { // TODO better name than ...service ?
     }
 
     public TaskDetailsEntity save(TaskDetailsEntity taskDetails) {
-        return repository.save(taskDetails);
+        TaskDetailsEntity entity = repository.save(taskDetails);
+        log.info(entity.toString());
+        return entity;
     }
 
     public void deleteById(Integer id) {

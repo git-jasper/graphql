@@ -1,6 +1,8 @@
 package com.jpr.maintenance.validation.errors;
 
-public enum InputValidationError {
+import graphql.ErrorClassification;
 
-    INVALID_DESCRIPTION;
+public enum InputValidationError implements ErrorClassification {
+
+    INVALID_DESCRIPTION, DATA_PERSISTENCE_ERROR;
 }

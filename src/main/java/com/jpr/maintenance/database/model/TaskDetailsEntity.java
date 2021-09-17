@@ -1,7 +1,10 @@
 package com.jpr.maintenance.database.model;
 
 import com.jpr.maintenance.validation.model.taskdetails.TaskDetails;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
 @Entity
 @Table(name = "task_details")
 @Getter
@@ -20,8 +26,6 @@ public class TaskDetailsEntity {
     private String description;
     private Integer interval_km;
     private Integer interval_months;
-
-    public TaskDetailsEntity() {}
 
     private TaskDetailsEntity(String description, Integer interval_km, Integer interval_months) {
         this.description = description;
