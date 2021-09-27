@@ -4,5 +4,5 @@ import graphql.ErrorClassification;
 
 public enum InputValidationError implements ErrorClassification {
 
-    INVALID_DESCRIPTION, DATA_PERSISTENCE_ERROR;
+    FAILED_TO_INSTANTIATE_OBJECT, INVALID_DESCRIPTION, DATA_PERSISTENCE_ERROR;
 }
