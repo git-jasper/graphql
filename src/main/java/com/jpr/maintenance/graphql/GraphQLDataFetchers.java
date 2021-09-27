@@ -2,6 +2,7 @@ package com.jpr.maintenance.graphql;
 
 import com.jpr.maintenance.database.model.TaskDetailsEntity;
 import com.jpr.maintenance.database.service.TaskDetailsService;
+import com.jpr.maintenance.graphql.model.TaskDetailsInput;
 import com.jpr.maintenance.validation.model.taskdetails.TaskDetails;
 import graphql.GraphQLError;
 import graphql.execution.DataFetcherResult;
@@ -11,7 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.*;
+import static com.jpr.maintenance.graphql.GraphQLUtils.errorFun;
+import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
+import static com.jpr.maintenance.graphql.GraphQLUtils.successFun;
+import static com.jpr.maintenance.reflection.ReflectiveConverter.toObject;
 
 @RequiredArgsConstructor
 @Configuration
@@ -37,7 +41,9 @@ public class GraphQLDataFetchers {
             "Mutation",
             "createTaskDetails",
             dataFetchingEnvironment ->
-                TaskDetails.of(dataFetchingEnvironment)
+                toObject(dataFetchingEnvironment.getArgument("taskDetailsInput"), TaskDetailsInput.class)
+                    // TODO redundant mapping? keep for now to do validation and not break too much...
+                    .flatMap(TaskDetails::of)
                     .flatMap(t -> saveTaskDetails(t, dataFetchingEnvironment))
                     .fold(
                         errorFun(),

@@ -1,28 +1,27 @@
 package com.jpr.maintenance.validation.model.taskdetails;
 
+import com.jpr.maintenance.graphql.model.TaskDetailsInput;
 import com.jpr.maintenance.validation.errors.InputValidationError;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
-import graphql.schema.DataFetchingEnvironment;
 import io.vavr.control.Either;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Pattern;
 
-@RequiredArgsConstructor
 @Getter
+@RequiredArgsConstructor
 public class TaskDetails {
 
     private static final Pattern descriptionWhitelist = Pattern.compile("[a-zA-Z ]{1,100}");
-    private static final Pattern integerWhitelist = Pattern.compile("\\d{1,10}");
 
     private final String description;
     private final Integer interval_km;
     private final Integer interval_months;
 
-    public static Either<GraphQLError, TaskDetails> of(DataFetchingEnvironment environment) {
-        final String description = environment.getArgument("description");
+    public static Either<GraphQLError, TaskDetails> of(TaskDetailsInput taskDetailsInput) {
+        final String description = taskDetailsInput.getDescription();
         if (!descriptionWhitelist.matcher(description).matches()) {
             return Either.left(
                 GraphqlErrorBuilder.newError()
@@ -31,12 +30,10 @@ public class TaskDetails {
                     .build()
             );
         }
-        Integer interval_km = environment.getArgument("interval_km");
-        Integer interval_months = environment.getArgument("interval_months");
         return Either.right(new TaskDetails(
             description,
-            interval_km,
-            interval_months
+            taskDetailsInput.getInterval_km(),
+            taskDetailsInput.getInterval_months()
         ));
     }
 }

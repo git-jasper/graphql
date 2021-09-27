@@ -11,7 +11,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GraphQLDataFetchersTest {
 
@@ -45,13 +48,13 @@ class GraphQLDataFetchersTest {
 
     @Test
     void createTaskDetailsOk() throws Exception {
-        Map<String, Object> arguments = Map.of(
+        Map<String, Object> map = Map.of(
             "description", "description",
             "interval_km", 5000,
             "interval_months", 48
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(arguments)
+            .arguments(Map.of("taskDetailsInput", map))
             .build();
         DataFetcher<DataFetcherResult<TaskDetailsEntity>> dataFetcher = graphQLDataFetchers.createTaskDetails().getDataFetcher();
         DataFetcherResult<TaskDetailsEntity> dataFetcherResult = dataFetcher.get(environment);
