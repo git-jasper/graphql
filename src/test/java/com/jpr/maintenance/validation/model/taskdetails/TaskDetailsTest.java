@@ -5,7 +5,7 @@ import graphql.GraphQLError;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.Test;
 
-import static com.jpr.maintenance.validation.errors.InputValidationError.INVALID_DESCRIPTION;
+import static com.jpr.maintenance.validation.errors.InputValidationError.INVALID_FIELD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -30,7 +30,7 @@ class TaskDetailsTest {
         Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
+        assertEquals(INVALID_FIELD, taskDetailsEither.getLeft().getErrorType());
     }
 
     @Test
@@ -39,7 +39,7 @@ class TaskDetailsTest {
         Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
+        assertEquals(INVALID_FIELD, taskDetailsEither.getLeft().getErrorType());
     }
 
     @Test
@@ -49,6 +49,6 @@ class TaskDetailsTest {
         Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
+        assertEquals(INVALID_FIELD, taskDetailsEither.getLeft().getErrorType());
     }
 }

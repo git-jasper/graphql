@@ -1,7 +1,6 @@
 package com.jpr.maintenance.validation.model.taskdetails;
 
 import com.jpr.maintenance.graphql.model.TaskDetailsInput;
-import com.jpr.maintenance.validation.errors.InputValidationError;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
@@ -9,6 +8,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.regex.Pattern;
+
+import static com.jpr.maintenance.validation.errors.InputValidationError.INVALID_FIELD;
 
 @Getter
 @RequiredArgsConstructor
@@ -25,8 +26,8 @@ public class TaskDetails {
         if (!descriptionWhitelist.matcher(description).matches()) {
             return Either.left(
                 GraphqlErrorBuilder.newError()
-                    .errorType(InputValidationError.INVALID_DESCRIPTION)
-                    .message("The description must consist of only letters and spaces, between 1 and 100 characters long.")
+                    .errorType(INVALID_FIELD)
+                    .message(INVALID_FIELD.getErrorMessage("description"))
                     .build()
             );
         }

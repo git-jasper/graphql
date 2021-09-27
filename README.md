@@ -20,8 +20,17 @@ query {
 }
 
 mutation {
-    createTaskDetails(description: "a default task", interval_km: 1000, interval_months: 12) {
-    task_id
+    createTaskDetails(
+        taskDetailsInput: {
+            description: "some text",
+            interval_km: 10000,
+            interval_months: 24
+        }
+    ) {
+        task_id,
+        description,
+        interval_km,
+        interval_months
     }
 }
 
