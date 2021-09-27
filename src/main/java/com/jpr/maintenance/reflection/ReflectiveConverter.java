@@ -1,6 +1,5 @@
 package com.jpr.maintenance.reflection;
 
-import com.jpr.maintenance.validation.errors.InputValidationError;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
@@ -8,6 +7,8 @@ import io.vavr.control.Either;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_INSTANTIATE_OBJECT;
 
 public class ReflectiveConverter {
 
@@ -18,8 +19,8 @@ public class ReflectiveConverter {
             return Either.right(clazz.getConstructor(fieldTypes).newInstance(arguments));
         } catch (Exception e) {
             return Either.left(GraphqlErrorBuilder.newError()
-                .errorType(InputValidationError.FAILED_TO_INSTANTIATE_OBJECT)
-                .message("Failed to instantiate object from input")
+                .errorType(FAILED_TO_INSTANTIATE_OBJECT)
+                .message(FAILED_TO_INSTANTIATE_OBJECT.getErrorMessage(clazz.getSimpleName()))
                 .build()
             );
         }
