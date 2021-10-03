@@ -9,6 +9,7 @@ import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,7 +70,7 @@ class GraphQLDataFetchersTest {
     @Test
     void createTaskDetailsUnhappyFlow() throws Exception {
         Map<String, Object> arguments = Map.of(
-            "description", "132"
+            "taskDetailsInput", new HashMap<>()
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
