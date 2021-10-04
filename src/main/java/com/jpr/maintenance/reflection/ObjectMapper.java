@@ -22,34 +22,26 @@ import static java.util.stream.Collectors.toList;
 
 public class ObjectMapper {
 
-    public static <T> Either<GraphQLError, T> toObject(Map<String, Object> map, Class<T> clazz) {
+    public static <T> Either<GraphQLError, T> toObject(Map<String, Object> arguments, Class<T> clazz) {
         List<FieldInfo> fields = getFields(clazz);
-        Class<?>[] constructorTypes = getConstructorTypes(fields);
+        Class<?>[] parameterTypes = getParameterTypes(fields);
         return arrayRight(fields.stream()
-            .map(resolveFieldFun(map))
+            .map(newArgumentFun(arguments))
             .collect(toList()))
             .fold(
                 errorFun(),
-                newInstanceFun(clazz, constructorTypes)
+                newInstanceFun(clazz, parameterTypes)
             );
-    }
-
-    private static Class<?>[] getConstructorTypes(List<FieldInfo> fields) {
-        return fields.stream().map(FieldInfo::getType).toArray(Class<?>[]::new);
     }
 
     private static <T> List<FieldInfo> getFields(Class<T> clazz) {
         return Arrays.stream(clazz.getDeclaredFields())
-            .map(getFieldInfoFun())
+            .map(newFieldInfoFun())
             .collect(toList());
     }
 
-    private static <T> Function<GraphQLError, Either<GraphQLError, T>> errorFun() {
-        return Either::left;
-    }
-
-    private static Function<Field, FieldInfo> getFieldInfoFun() {
-        return field -> new FieldInfo(field.getName(), field.getType(), getGenericType(field.getGenericType()));
+    private static Class<?>[] getParameterTypes(List<FieldInfo> fields) {
+        return fields.stream().map(FieldInfo::getType).toArray(Class<?>[]::new);
     }
 
     private static Type getGenericType(Type type) {
@@ -72,9 +64,13 @@ public class ObjectMapper {
         return Either.right(rightValues);
     }
 
-    private static Function<FieldInfo, Either<GraphQLError, ?>> resolveFieldFun(Map<String, Object> map) {
+    private static Function<Field, FieldInfo> newFieldInfoFun() {
+        return field -> new FieldInfo(field.getName(), field.getType(), getGenericType(field.getGenericType()));
+    }
+
+    private static Function<FieldInfo, Either<GraphQLError, ?>> newArgumentFun(Map<String, Object> arguments) {
         return field -> {
-            Object object = map.get(field.getName());
+            Object object = arguments.get(field.getName());
             Class<?> clazz = (Class<?>) field.getGenericType();
             if (clazz.isInstance(object)) {
                 return Either.right(clazz.cast(object));
@@ -94,6 +90,10 @@ public class ObjectMapper {
         };
     }
 
+    private static <T> Function<GraphQLError, Either<GraphQLError, T>> errorFun() {
+        return Either::left;
+    }
+
     private static <T> Function<Object[], Either<GraphQLError, T>> newInstanceFun(Class<T> clazz, Class<?>[] constructorTypes) {
         return r -> {
             try {
@@ -107,10 +107,11 @@ public class ObjectMapper {
             }
         };
     }
-
+    
     @Getter
     @RequiredArgsConstructor
     static class FieldInfo {
+
         private final String name;
         private final Type type;
         private final Type genericType;
