@@ -23,10 +23,8 @@ import static java.util.stream.Collectors.toList;
 public class ObjectMapper {
 
     public static <T> Either<GraphQLError, T> toObject(Map<String, Object> map, Class<T> clazz) {
-        List<FieldInfo> fields = Arrays.stream(clazz.getDeclaredFields())
-            .map(getFieldInfoFun())
-            .collect(toList());
-        Class<?>[] constructorTypes = fields.stream().map(FieldInfo::getType).toArray(Class<?>[]::new);
+        List<FieldInfo> fields = getFields(clazz);
+        Class<?>[] constructorTypes = getConstructorTypes(fields);
         return arrayRight(fields.stream()
             .map(resolveFieldFun(map))
             .collect(toList()))
@@ -34,6 +32,16 @@ public class ObjectMapper {
                 errorFun(),
                 newInstanceFun(clazz, constructorTypes)
             );
+    }
+
+    private static Class<?>[] getConstructorTypes(List<FieldInfo> fields) {
+        return fields.stream().map(FieldInfo::getType).toArray(Class<?>[]::new);
+    }
+
+    private static <T> List<FieldInfo> getFields(Class<T> clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
+            .map(getFieldInfoFun())
+            .collect(toList());
     }
 
     private static <T> Function<GraphQLError, Either<GraphQLError, T>> errorFun() {
