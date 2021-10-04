@@ -17,7 +17,7 @@ import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ReflectiveConverterTest {
+class ObjectMapperTest {
 
     @Test
     public void toObjectOk(){
@@ -26,7 +26,7 @@ class ReflectiveConverterTest {
             "description", "test",
             "interval_months", 2
         );
-        TaskDetailsInput taskDetailsInput = ReflectiveConverter.toObject(map, TaskDetailsInput.class).get();
+        TaskDetailsInput taskDetailsInput = ObjectMapper.toObject(map, TaskDetailsInput.class).get();
 
         assertEquals("test", taskDetailsInput.getDescription());
         assertEquals(1, taskDetailsInput.getInterval_km());
@@ -36,7 +36,7 @@ class ReflectiveConverterTest {
     @Test
     public void toObjectFailedToResolveField(){
         Map<String, Object> map = Map.of("name", "test");
-        GraphQLError error = ReflectiveConverter.toObject(map, MissingConstructor.class).getLeft();
+        GraphQLError error = ObjectMapper.toObject(map, MissingConstructor.class).getLeft();
 
         assertEquals(FAILED_TO_INSTANTIATE_OBJECT, error.getErrorType());
     }
@@ -44,7 +44,7 @@ class ReflectiveConverterTest {
     @Test
     public void toObjectFailedToInstantiateObject(){
         Map<String, Object> map = new HashMap<>();
-        GraphQLError error = ReflectiveConverter.toObject(map, TaskDetailsInput.class).getLeft();
+        GraphQLError error = ObjectMapper.toObject(map, TaskDetailsInput.class).getLeft();
 
         assertEquals(FAILED_TO_RESOLVE_FIELD, error.getErrorType());
     }
@@ -54,7 +54,7 @@ class ReflectiveConverterTest {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "main");
         map.put("ref", Map.of("name", "ref", "text", "text"));
-        Either<GraphQLError, ClassWithRef> either = ReflectiveConverter.toObject(map, ClassWithRef.class);
+        Either<GraphQLError, ClassWithRef> either = ObjectMapper.toObject(map, ClassWithRef.class);
 
         assertTrue(either.isRight());
         ClassWithRef classWithRef = either.get();
@@ -68,7 +68,7 @@ class ReflectiveConverterTest {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "main");
         map.put("refs", List.of(Map.of("name", "ref1"), Map.of("name", "ref2")));
-        Either<GraphQLError, ClassWithListOfRef> either = ReflectiveConverter.toObject(map, ClassWithListOfRef.class);
+        Either<GraphQLError, ClassWithListOfRef> either = ObjectMapper.toObject(map, ClassWithListOfRef.class);
 
         assertTrue(either.isRight());
         ClassWithListOfRef outerClass = either.get();

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import static com.jpr.maintenance.graphql.GraphQLUtils.errorFun;
 import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
 import static com.jpr.maintenance.graphql.GraphQLUtils.successFun;
-import static com.jpr.maintenance.reflection.ReflectiveConverter.toObject;
+import static com.jpr.maintenance.reflection.ObjectMapper.toObject;
 
 @RequiredArgsConstructor
 @Configuration

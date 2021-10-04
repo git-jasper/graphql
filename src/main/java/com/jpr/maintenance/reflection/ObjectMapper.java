@@ -20,23 +20,27 @@ import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_
 import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_RESOLVE_FIELD;
 import static java.util.stream.Collectors.toList;
 
-public class ReflectiveConverter {
+public class ObjectMapper {
 
     public static <T> Either<GraphQLError, T> toObject(Map<String, Object> map, Class<T> clazz) {
         List<FieldInfo> fields = Arrays.stream(clazz.getDeclaredFields())
-            .map(getFieldFun())
+            .map(getFieldInfoFun())
             .collect(toList());
         Class<?>[] constructorTypes = fields.stream().map(FieldInfo::getType).toArray(Class<?>[]::new);
         return arrayRight(fields.stream()
             .map(resolveFieldFun(map))
             .collect(toList()))
             .fold(
-                Either::left,
-                constructInstance(clazz, constructorTypes)
+                errorFun(),
+                newInstanceFun(clazz, constructorTypes)
             );
     }
 
-    private static Function<Field, FieldInfo> getFieldFun() {
+    private static <T> Function<GraphQLError, Either<GraphQLError, T>> errorFun() {
+        return Either::left;
+    }
+
+    private static Function<Field, FieldInfo> getFieldInfoFun() {
         return field -> new FieldInfo(field.getName(), field.getType(), getGenericType(field.getGenericType()));
     }
 
@@ -82,7 +86,7 @@ public class ReflectiveConverter {
         };
     }
 
-    private static <T> Function<Object[], Either<GraphQLError, T>> constructInstance(Class<T> clazz, Class<?>[] constructorTypes) {
+    private static <T> Function<Object[], Either<GraphQLError, T>> newInstanceFun(Class<T> clazz, Class<?>[] constructorTypes) {
         return r -> {
             try {
                 return Either.right(clazz.getConstructor(constructorTypes).newInstance(r));
