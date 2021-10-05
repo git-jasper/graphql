@@ -15,12 +15,12 @@ class TaskDetailsServiceTest {
 
     @Test
     void findDetailsByIdOk() {
-        assertTrue(service.findById(0).isPresent());
+        assertTrue(service.findById(0L).isPresent());
     }
 
     @Test
     void findDetailsByIdEmpty() {
-        assertTrue(service.findById(-1).isEmpty());
+        assertTrue(service.findById(-1L).isEmpty());
     }
 
     @Test
