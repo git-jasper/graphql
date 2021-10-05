@@ -21,8 +21,7 @@ import javax.persistence.Table;
 public class TaskDetailsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer task_id;
+    private Long task_id;
     private String description;
     private Integer interval_km;
     private Integer interval_months;
