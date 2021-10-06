@@ -1,6 +1,6 @@
 @startuml
 
-entity "Registry" as R {
+entity "Registration" as R {
 id: number <<generated>>
 --
 username: text
@@ -35,7 +35,7 @@ interval_months: number
 entity "ServiceEntry" as SE {
 id: number <<generated>>
 --
-registry_id: number <<foreign key>>
+registration_id: number <<foreign key>>
 --
 task_id: number <<foreign key>>
 --
@@ -49,7 +49,7 @@ note: text
 entity "ServiceStatus" as SS  {
 id: number <<generated>>
 --
-registry_id: number <<foreign key>>
+registration_id: number <<foreign key>>
 --
 task_id: number <<foreign key>>
 --
