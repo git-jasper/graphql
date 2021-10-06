@@ -1,0 +1,67 @@
+@startuml
+
+entity "Registry" as R {
+id: number <<generated>>
+--
+username: text
+--
+motorcycle_id: number <<foreign key>>
+}
+
+entity "Motorcycle" as M {
+id: number <<generated>>
+--
+brand: text
+--
+model: text
+--
+year: text/number
+}
+
+entity "Task" as T {
+id: number <<generated>>
+--
+motorcycle_id: number <<foreign key>>
+--
+part: text
+--
+action: text
+--
+interval_km: number
+--
+interval_months: number
+}
+
+entity "ServiceEntry" as SE {
+id: number <<generated>>
+--
+registry_id: number <<foreign key>>
+--
+task_id: number <<foreign key>>
+--
+serviced_at_km: number
+--
+serviced_at_months: number
+--
+note: text
+}
+
+entity "ServiceStatus" as SS  {
+id: number <<generated>>
+--
+registry_id: number <<foreign key>>
+--
+task_id: number <<foreign key>>
+--
+next_service_km: number
+--
+next_service_months: number
+}
+
+R }|--|| M
+T }|--|| M
+SE }|--|| R
+SE }|--|| T
+SS }|--|| R
+SS }|--|| T
+@enduml
