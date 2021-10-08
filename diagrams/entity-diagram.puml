@@ -23,9 +23,7 @@ id: number <<generated>>
 --
 motorcycle_id: number <<foreign key>>
 --
-part: text
---
-action: text
+description: text
 --
 interval_km: number
 --

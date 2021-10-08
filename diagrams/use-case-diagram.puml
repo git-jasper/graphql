@@ -1,0 +1,32 @@
+@startuml
+skinparam actorstyle awesome
+left to right direction
+actor user
+actor admin
+rectangle app {
+    usecase (create/delete motorcycle) as M
+    usecase (create/delete tasks) as T
+
+    usecase (motorcycle registration) as MR
+    usecase (list motorcycle tasks) as LT
+    note right of LT
+        - by service interval
+        - all
+    end note
+    usecase (service entry) as SE
+    usecase (list service history) as LH
+    note right of LH
+        - by task
+        - by motorcycle
+    end note
+}
+admin --> M
+admin --> T
+
+user --> MR
+user --> SE
+user --> LT
+user --> LH
+
+
+@enduml
