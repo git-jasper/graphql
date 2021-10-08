@@ -30,7 +30,7 @@ interval_km: number
 interval_months: number
 }
 
-entity "ServiceEntry" as SE {
+entity "Record" as SE {
 id: number <<generated>>
 --
 registration_id: number <<foreign key>>
@@ -44,7 +44,7 @@ serviced_at_months: number
 note: text
 }
 
-entity "ServiceStatus" as SS  {
+entity "Status" as SS  {
 id: number <<generated>>
 --
 registration_id: number <<foreign key>>
