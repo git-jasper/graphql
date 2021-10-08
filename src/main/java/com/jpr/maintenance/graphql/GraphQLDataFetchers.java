@@ -30,7 +30,7 @@ public class GraphQLDataFetchers {
             "taskDetailsById",
             dataFetchingEnvironment -> {
                 String taskId = dataFetchingEnvironment.getArgument("task_id");
-                return service.findById(Integer.valueOf(taskId)).stream().findFirst().orElse(null);
+                return service.findById(Long.valueOf(taskId)).stream().findFirst().orElse(null);
             }
         );
     }
@@ -64,7 +64,7 @@ public class GraphQLDataFetchers {
             "deleteTaskDetails",
             dataFetchingEnvironment -> {
                 String task_id = dataFetchingEnvironment.getArgument("task_id");
-                service.deleteById(Integer.valueOf(task_id));
+                service.deleteById(Long.valueOf(task_id));
                 return null;
             }
         );
