@@ -1,11 +1,11 @@
 @startuml
 
-entity "Registration" as R {
+entity "User" as U {
 id: number <<generated>>
 --
-username: text
+name: text
 --
-motorcycle_id: number <<foreign key>>
+password: text
 }
 
 entity "Motorcycle" as M {
@@ -18,10 +18,38 @@ model: text
 year: text/number
 }
 
-entity "Task" as T {
+entity "Registration" as R {
 id: number <<generated>>
 --
+user_id: number <<foreign key>>
+--
 motorcycle_id: number <<foreign key>>
+--
+OPTIONAL -> date: timestamp
+}
+
+entity "Options" as O {
+id: number <<generated>>
+--
+registration_id: number <<foreign key>>
+--
+description: text
+}
+
+entity "Service" as S {
+id: number <<generated>>
+--
+registration_id: number <<foreign key>>
+--
+service_record_id: number <<foreign key>>
+--
+mileage: number
+--
+date: timestamp
+}
+
+entity "Default_Task" as DT {
+id: number <<generated>>
 --
 description: text
 --
@@ -30,16 +58,34 @@ interval_km: number
 interval_months: number
 }
 
-entity "Record" as SE {
+entity "User_Task" as UT {
 id: number <<generated>>
 --
-registration_id: number <<foreign key>>
+user_id: number <<foreign key>>
+--
+description: text
+--
+interval_km: number
+--
+interval_months: number
+}
+
+entity "Task" as T {
+id: number <<generated>>
+--
+default_task_id: number <<foreign key>>
+--
+custom_task_id: number <<foreign key>>
+--
+CONSTRAINT: either motor/custom task id present
+}
+
+entity "Service_Record" as SR {
+id: number <<generated>>
+--
+service_id: number <<foreign key>>
 --
 task_id: number <<foreign key>>
---
-serviced_at_km: number
---
-serviced_at_months: number
 --
 note: text
 }
@@ -56,10 +102,17 @@ next_service_km: number
 next_service_months: number
 }
 
+
+U ||--|{ R
+U ||--|{ UT
 R }|--|| M
-T }|--|| M
-SE }|--|| R
-SE }|--|| T
-SS }|--|| R
-SS }|--|| T
+R ||--|{ S
+R ||--|{ O
+R ||--|{ SS
+S ||--|{ SR
+T }|--|| DT
+T }|--|| UT
+T }|--|{ SR
+T ||--|{ SS
+
 @enduml
