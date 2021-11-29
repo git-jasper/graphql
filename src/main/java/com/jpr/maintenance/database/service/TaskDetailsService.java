@@ -17,7 +17,7 @@ public class TaskDetailsService { // TODO better name than ...service ?
         this.repository = repository;
     }
 
-    public Optional<TaskDetailsEntity> findById(Integer id) {
+    public Optional<TaskDetailsEntity> findById(Long id) {
         return repository.findById(id);
     }
 
@@ -27,7 +27,7 @@ public class TaskDetailsService { // TODO better name than ...service ?
         return entity;
     }
 
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         repository.deleteById(id);
     }
 }

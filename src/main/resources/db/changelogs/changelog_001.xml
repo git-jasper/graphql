@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="jonck" id="create_tables">
+        <createTable tableName="task_details">
+            <column name="task_id" type="BIGSERIAL" autoIncrement="true" startWith="3">
+                <constraints primaryKey="true" primaryKeyName="task_details_pk"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interval_km" type="INT" />
+            <column name="interval_months" type="INT" />
+        </createTable>
+    </changeSet>
+    <changeSet author="jonck" id="insert_mock_data">
+        <insert tableName="task_details">
+            <column name="task_id" valueNumeric="1"/>
+            <column name="description" value="Change oil"/>
+            <column name="interval_km" value="20000"/>
+            <column name="interval_months" value="12"/>
+        </insert>
+        <insert tableName="task_details">
+            <column name="task_id" valueNumeric="2"/>
+            <column name="description" value="Replace tires"/>
+            <column name="interval_km" value="50000"/>
+            <column name="interval_months" value="48"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

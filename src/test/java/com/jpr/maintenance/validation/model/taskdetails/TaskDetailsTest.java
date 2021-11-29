@@ -1,13 +1,11 @@
 package com.jpr.maintenance.validation.model.taskdetails;
 
+import com.jpr.maintenance.graphql.model.TaskDetailsInput;
 import graphql.GraphQLError;
-import graphql.schema.DataFetchingEnvironmentImpl;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static com.jpr.maintenance.validation.errors.InputValidationError.INVALID_DESCRIPTION;
+import static com.jpr.maintenance.validation.errors.InputValidationError.INVALID_FIELD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -16,15 +14,8 @@ class TaskDetailsTest {
     @Test
     void createDetailsOk() {
         final String description = "HundredCharacterString    HundredCharacterString    HundredCharacterString    HundredCharacterString";
-        Map<String, Object> arguments = Map.of(
-            "description", description,
-            "interval_km", 5000,
-            "interval_months", 48
-        );
-        var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(arguments)
-            .build();
-        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        TaskDetailsInput taskDetailsInput = new TaskDetailsInput(description, 5000, 48);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isRight());
         TaskDetails taskDetails = taskDetailsEither.get();
@@ -35,49 +26,29 @@ class TaskDetailsTest {
 
     @Test
     void descriptionInvalidCharacter() {
-        Map<String, Object> arguments = Map.of(
-            "description", "some \n description",
-            "interval_km", 5000,
-            "interval_months", 48
-        );
-        var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(arguments)
-            .build();
-        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        TaskDetailsInput taskDetailsInput = new TaskDetailsInput("some \n description", 5000, 48);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
+        assertEquals(INVALID_FIELD, taskDetailsEither.getLeft().getErrorType());
     }
 
     @Test
     void descriptionEmpty() {
-        Map<String, Object> arguments = Map.of(
-            "description", "",
-            "interval_km", 5000,
-            "interval_months", 48
-        );
-        var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(arguments)
-            .build();
-        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        TaskDetailsInput taskDetailsInput = new TaskDetailsInput("", 5000, 48);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
+        assertEquals(INVALID_FIELD, taskDetailsEither.getLeft().getErrorType());
     }
 
     @Test
     void descriptionTooLong() {
-        Map<String, Object> arguments = Map.of(
-            "description", "HundredAndOneCharacterString         HundredAndOneCharacterString        HundredAndOneCharacterString",
-            "interval_km", 5000,
-            "interval_months", 48
-        );
-        var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(arguments)
-            .build();
-        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(environment);
+        String tooLongString = "HundredAndOneCharacterString         HundredAndOneCharacterString        HundredAndOneCharacterString";
+        TaskDetailsInput taskDetailsInput = new TaskDetailsInput(tooLongString, 5000, 48);
+        Either<GraphQLError, TaskDetails> taskDetailsEither = TaskDetails.of(taskDetailsInput);
 
         assertTrue(taskDetailsEither.isLeft());
-        assertEquals(INVALID_DESCRIPTION, taskDetailsEither.getLeft().getErrorType());
+        assertEquals(INVALID_FIELD, taskDetailsEither.getLeft().getErrorType());
     }
 }

@@ -20,15 +20,15 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public Optional<TaskDetailsEntity> findById(Integer integer) {
-        if (integer >= 0) {
+    public Optional<TaskDetailsEntity> findById(Long id) {
+        if (id >= 0) {
             return Optional.of(new TaskDetailsEntity());
         }
         return Optional.empty();
     }
 
     @Override
-    public boolean existsById(Integer integer) {
+    public boolean existsById(Long id) {
         return false;
     }
 
@@ -38,7 +38,7 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public Iterable<TaskDetailsEntity> findAllById(Iterable<Integer> iterable) {
+    public Iterable<TaskDetailsEntity> findAllById(Iterable<Long> iterable) {
         return singleton(new TaskDetailsEntity());
     }
 
@@ -48,7 +48,7 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public void deleteById(Integer integer) {
+    public void deleteById(Long id) {
 
     }
 
@@ -58,7 +58,7 @@ public class TaskDetailsRepositoryTestImpl implements TaskDetailsRepository {
     }
 
     @Override
-    public void deleteAllById(Iterable<? extends Integer> iterable) {
+    public void deleteAllById(Iterable<? extends Long> iterable) {
 
     }
 
