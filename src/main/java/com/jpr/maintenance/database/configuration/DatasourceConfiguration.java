@@ -12,13 +12,9 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
-import org.springframework.data.r2dbc.convert.R2dbcCustomConversions;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Setter
@@ -61,16 +57,4 @@ public class DatasourceConfiguration extends AbstractR2dbcConfiguration {
                 .build()
         );
     }
-
-//    @Bean
-//    @Override
-//    public R2dbcCustomConversions r2dbcCustomConversions() {
-//        List<Converter<?, ?>> converterList = new ArrayList<>();
-//        converterList.add(new PanoramixUserReadingConverter(cryptoPassword, cryptoVector));
-//        converterList.add(new PanoramixUserWritingConverter(cryptoPassword, cryptoVector));
-//        converterList.add(new RoomReadingConverter());
-//        converterList.add(new RoomWritingConverter());
-//        converterList.add(new LocationReadingConverter());
-//        return new R2dbcCustomConversions(getStoreConversions(), converterList);
-//    }
 }
