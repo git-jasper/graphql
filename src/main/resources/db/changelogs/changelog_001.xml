@@ -1,29 +1,33 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <changeSet author="jonck" id="create_tables">
-        <createTable tableName="task_details">
-            <column name="task_id" type="BIGSERIAL" autoIncrement="true" startWith="3">
-                <constraints primaryKey="true" primaryKeyName="task_details_pk"/>
+        <createTable tableName="motorcycle">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="3">
+                <constraints primaryKey="true" primaryKeyName="motorcycle_pk"/>
             </column>
-            <column name="description" type="VARCHAR(255)">
+            <column name="brand" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="interval_km" type="INT" />
-            <column name="interval_months" type="INT" />
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="engine_size" type="INT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <changeSet author="jonck" id="insert_mock_data">
-        <insert tableName="task_details">
-            <column name="task_id" valueNumeric="1"/>
-            <column name="description" value="Change oil"/>
-            <column name="interval_km" value="20000"/>
-            <column name="interval_months" value="12"/>
+        <insert tableName="motorcycle">
+            <column name="id" valueNumeric="1"/>
+            <column name="brand" value="SUZUKI"/>
+            <column name="name" value="GSX-1300R"/>
+            <column name="engine_size" value="1340"/>
         </insert>
-        <insert tableName="task_details">
-            <column name="task_id" valueNumeric="2"/>
-            <column name="description" value="Replace tires"/>
-            <column name="interval_km" value="50000"/>
-            <column name="interval_months" value="48"/>
+        <insert tableName="motorcycle">
+            <column name="id" valueNumeric="2"/>
+            <column name="brand" value="DUCATI"/>
+            <column name="name" value="999R"/>
+            <column name="engine_size" value="999"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
