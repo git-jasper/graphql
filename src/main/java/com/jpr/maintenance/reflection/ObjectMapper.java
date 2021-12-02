@@ -5,6 +5,7 @@ import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -20,6 +21,7 @@ import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_
 import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_RESOLVE_FIELD;
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 public class ObjectMapper {
 
     public static <T> Either<GraphQLError, T> toObject(Map<String, Object> arguments, Class<T> clazz) {
@@ -74,6 +76,8 @@ public class ObjectMapper {
             Class<?> clazz = (Class<?>) field.getGenericType();
             if (clazz.isInstance(object)) {
                 return Either.right(clazz.cast(object));
+            } else if (clazz.isEnum()) {
+                return Either.right(createEnumInstance((String) object, field.getType()));
             } else if (object instanceof Map) {
                 return toObject(((Map<String, Object>) object), clazz);
             } else if (object instanceof List) {
@@ -88,6 +92,11 @@ public class ObjectMapper {
                 );
             }
         };
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends Enum<T>> T createEnumInstance(String name, Type type) {
+        return Enum.valueOf((Class<T>) type, name);
     }
 
     private static <T> Function<GraphQLError, Either<GraphQLError, T>> errorFun() {

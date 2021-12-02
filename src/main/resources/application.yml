@@ -1,15 +1,4 @@
 spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/maintenance
-    username: user
-    password: pass
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:db/changelog.xml
 

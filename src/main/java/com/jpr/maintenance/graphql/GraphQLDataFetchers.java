@@ -31,7 +31,7 @@ public class GraphQLDataFetchers {
     }
 
     @Bean
-    public DataFetcherWrapper<DataFetcherResult<CompletableFuture<MotorcycleEntity>>> createTaskDetails() {
+    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<MotorcycleEntity>>> createTaskDetails() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "createMotorcycle",
