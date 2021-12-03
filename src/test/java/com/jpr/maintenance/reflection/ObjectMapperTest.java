@@ -41,7 +41,7 @@ class ObjectMapperTest {
     }
 
     @Test
-    public void toObjectFailedToInstantiateObject(){
+    public void toObjectNullValue(){
         Map<String, Object> map = new HashMap<>();
         GraphQLError error = ObjectMapper.toObject(map, MotorcycleInput.class).getLeft();
 
@@ -103,5 +103,4 @@ class ObjectMapperTest {
     static class RefClass {
         private final String name;
     }
-
 }

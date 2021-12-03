@@ -3,7 +3,6 @@ package com.jpr.maintenance.graphql;
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.service.MotorcycleService;
 import graphql.schema.DataFetchingEnvironmentImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -18,7 +17,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Slf4j
 class GraphQLDataFetchersTest {
     private MotorcycleService service;
     private GraphQLDataFetchers graphQLDataFetchers;
@@ -80,7 +78,7 @@ class GraphQLDataFetchersTest {
         var dataFetcher = graphQLDataFetchers.createMotorcycle().getDataFetcher();
         var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
         var resultData = dataFetcherResult.getData();
-        log.info(String.format("Result data: %s", resultData));
+
         assertEquals(DUCATI, resultData.getBrand());
         assertEquals("999R", resultData.getName());
         assertEquals(999, resultData.getEngineSize());
