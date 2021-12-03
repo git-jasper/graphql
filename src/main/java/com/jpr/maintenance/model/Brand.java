@@ -14,7 +14,7 @@ public enum Brand {
     KTM("KTM"),
     ROYAL_ENFIELD("Royal Enfield"),
     SUZUKI("Suzuki"),
-    TRIUMPH("Triump"),
+    TRIUMPH("Triumph"),
     YAMAHA("Yamaha");
 
     private final String brandName;

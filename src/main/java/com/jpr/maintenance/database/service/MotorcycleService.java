@@ -21,7 +21,8 @@ public class MotorcycleService {
         return motorcycleRepository.save(motorcycle);
     }
 
-    public Mono<Void> deleteById(Long id) {
-        return motorcycleRepository.deleteById(id);
+    public Mono<Boolean> deleteById(Long id) {
+        return motorcycleRepository.removeById(id)
+            .map(i -> i == 1);
     }
 }

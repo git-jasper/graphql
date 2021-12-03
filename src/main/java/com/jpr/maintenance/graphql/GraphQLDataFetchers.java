@@ -31,7 +31,7 @@ public class GraphQLDataFetchers {
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<MotorcycleEntity>>> createTaskDetails() {
+    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<MotorcycleEntity>>> createMotorcycle() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "createMotorcycle",
@@ -47,13 +47,13 @@ public class GraphQLDataFetchers {
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<Void>> deleteTaskDetails() {
+    public DataFetcherWrapper<CompletableFuture<Boolean>> deleteMotorcycle() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "deleteMotorcycle",
             dataFetchingEnvironment -> {
-                String task_id = dataFetchingEnvironment.getArgument("id");
-                return motorcycleService.deleteById(Long.valueOf(task_id)).toFuture();
+                String id = dataFetchingEnvironment.getArgument("id");
+                return motorcycleService.deleteById(Long.valueOf(id)).toFuture();
             }
         );
     }
