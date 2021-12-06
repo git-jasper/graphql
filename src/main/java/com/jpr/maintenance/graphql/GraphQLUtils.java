@@ -29,9 +29,9 @@ public class GraphQLUtils {
         }
     }
 
-    public static <T, U> Either<GraphQLError, Mono<T>> databaseFun(U input, Function<U, Mono<T>> retrievalFun, DataFetchingEnvironment environment) {
+    public static <T, U> Either<GraphQLError, Mono<T>> entityFun(U input, Function<U, Mono<T>> serviceFun, DataFetchingEnvironment environment) {
         try {
-            return Either.right(retrievalFun.apply(input));
+            return Either.right(serviceFun.apply(input));
         } catch (DataAccessException e) {
             return Either.left(
                 GraphqlErrorBuilder

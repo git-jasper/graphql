@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.databaseFun;
+import static com.jpr.maintenance.graphql.GraphQLUtils.entityFun;
 import static com.jpr.maintenance.graphql.GraphQLUtils.errorFun;
 import static com.jpr.maintenance.graphql.GraphQLUtils.successFun;
 import static com.jpr.maintenance.reflection.ObjectMapper.toObject;
@@ -30,7 +30,7 @@ public class UserDataFetchers {
             dataFetchingEnvironment ->
                 toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(User::of)
-                    .flatMap(e -> databaseFun(e, userService::findByUser, dataFetchingEnvironment))
+                    .flatMap(e -> entityFun(e, userService::findByUser, dataFetchingEnvironment))
                     .fold(
                         errorFun(),
                         successFun()
@@ -46,7 +46,7 @@ public class UserDataFetchers {
             dataFetchingEnvironment ->
                 toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(UserEntity::of)
-                    .flatMap(e -> databaseFun(e, userService::save, dataFetchingEnvironment))
+                    .flatMap(e -> entityFun(e, userService::save, dataFetchingEnvironment))
                     .fold(
                         errorFun(),
                         successFun()
@@ -62,7 +62,7 @@ public class UserDataFetchers {
             dataFetchingEnvironment ->
                 toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(User::of)
-                    .flatMap(e -> databaseFun(e, userService::deleteByUser, dataFetchingEnvironment))
+                    .flatMap(e -> entityFun(e, userService::deleteByUser, dataFetchingEnvironment))
                     .fold(
                         errorFun(),
                         successFun()
