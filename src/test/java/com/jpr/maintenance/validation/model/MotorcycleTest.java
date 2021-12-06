@@ -1,8 +1,7 @@
-package com.jpr.maintenance.validation.model.taskdetails;
+package com.jpr.maintenance.validation.model;
 
 import com.jpr.maintenance.graphql.model.MotorcycleInput;
 import com.jpr.maintenance.model.Brand;
-import com.jpr.maintenance.validation.model.Motorcycle;
 import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collectors;
