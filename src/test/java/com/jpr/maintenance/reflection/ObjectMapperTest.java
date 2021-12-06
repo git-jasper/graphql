@@ -1,7 +1,6 @@
 package com.jpr.maintenance.reflection;
 
-
-import com.jpr.maintenance.graphql.model.TaskDetailsInput;
+import com.jpr.maintenance.graphql.model.MotorcycleInput;
 import graphql.GraphQLError;
 import io.vavr.control.Either;
 import lombok.Getter;
@@ -12,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_INSTANTIATE_OBJECT;
-import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_RESOLVE_FIELD;
+import static com.jpr.maintenance.model.Brand.DUCATI;
+import static com.jpr.maintenance.validation.errors.InputValidationError.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,15 +21,15 @@ class ObjectMapperTest {
     @Test
     public void toObjectOk(){
         Map<String, Object> map = Map.of(
-            "interval_km", 1,
-            "description", "test",
-            "interval_months", 2
+            "brand", "DUCATI",
+            "name", "999R",
+            "engineSize", 999
         );
-        TaskDetailsInput taskDetailsInput = ObjectMapper.toObject(map, TaskDetailsInput.class).get();
+        MotorcycleInput input = ObjectMapper.toObject(map, MotorcycleInput.class).get();
 
-        assertEquals("test", taskDetailsInput.getDescription());
-        assertEquals(1, taskDetailsInput.getInterval_km());
-        assertEquals(2, taskDetailsInput.getInterval_months());
+        assertEquals(DUCATI, input.brand());
+        assertEquals("999R", input.name());
+        assertEquals(999, input.engineSize());
     }
 
     @Test
@@ -42,11 +41,11 @@ class ObjectMapperTest {
     }
 
     @Test
-    public void toObjectFailedToInstantiateObject(){
+    public void toObjectNullValue(){
         Map<String, Object> map = new HashMap<>();
-        GraphQLError error = ObjectMapper.toObject(map, TaskDetailsInput.class).getLeft();
+        GraphQLError error = ObjectMapper.toObject(map, MotorcycleInput.class).getLeft();
 
-        assertEquals(FAILED_TO_RESOLVE_FIELD, error.getErrorType());
+        assertEquals(NULL_VALUE, error.getErrorType());
     }
 
     @Test
@@ -104,5 +103,4 @@ class ObjectMapperTest {
     static class RefClass {
         private final String name;
     }
-
 }

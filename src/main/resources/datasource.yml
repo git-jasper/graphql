@@ -1,0 +1,7 @@
+datasource:
+  host: localhost
+  port: 5432
+  username: user
+  password: pass
+  database: maintenance
+  driver_class_name: org.postgresql.Driver

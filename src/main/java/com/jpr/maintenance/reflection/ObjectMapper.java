@@ -1,10 +1,12 @@
 package com.jpr.maintenance.reflection;
 
+import com.jpr.maintenance.graphql.GraphQLUtils;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -16,10 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_INSTANTIATE_OBJECT;
-import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_RESOLVE_FIELD;
+import static com.jpr.maintenance.graphql.GraphQLUtils.createLeft;
+import static com.jpr.maintenance.validation.errors.InputValidationError.*;
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 public class ObjectMapper {
 
     public static <T> Either<GraphQLError, T> toObject(Map<String, Object> arguments, Class<T> clazz) {
@@ -74,6 +77,8 @@ public class ObjectMapper {
             Class<?> clazz = (Class<?>) field.getGenericType();
             if (clazz.isInstance(object)) {
                 return Either.right(clazz.cast(object));
+            } else if (clazz.isEnum()) {
+                return createEnumInstance((String) object, field);
             } else if (object instanceof Map) {
                 return toObject(((Map<String, Object>) object), clazz);
             } else if (object instanceof List) {
@@ -81,13 +86,15 @@ public class ObjectMapper {
                     .map(obj -> toObject(((Map<String, Object>) obj), clazz))
                     .collect(toList()));
             } else {
-                return Either.left(GraphqlErrorBuilder.newError()
-                    .errorType(FAILED_TO_RESOLVE_FIELD)
-                    .message(FAILED_TO_RESOLVE_FIELD.getErrorMessage(field.getName()))
-                    .build()
-                );
+                return createLeft(FAILED_TO_RESOLVE_FIELD, field.getName());
             }
         };
+    }
+
+    private static <T extends Enum<T>> Either<GraphQLError, T> createEnumInstance(String name, FieldInfo fieldInfo) {
+        return name != null
+            ? Either.right(Enum.valueOf((Class<T>) fieldInfo.getType(), name))
+            : createLeft(NULL_VALUE, fieldInfo.getName());
     }
 
     private static <T> Function<GraphQLError, Either<GraphQLError, T>> errorFun() {

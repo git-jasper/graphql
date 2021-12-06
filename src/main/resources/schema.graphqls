@@ -1,21 +1,25 @@
 type Query {
-    taskDetailsById(task_id: ID): TaskDetails
+    motorcycleById(id: ID): Motorcycle
 }
 
 type Mutation {
-    createTaskDetails(taskDetailsInput: TaskDetailsInput!): TaskDetails
-    deleteTaskDetails(task_id: ID): Boolean
+    createMotorcycle(motorcycleInput: MotorcycleInput!): Motorcycle
+    deleteMotorcycle(id: ID): Boolean
 }
 
-type TaskDetails {
-    task_id: ID
-    description: String
-    interval_km: Int
-    interval_months: Int
+type Motorcycle {
+    id: ID
+    brand: Brand
+    name: String
+    engineSize: Int
 }
 
-input TaskDetailsInput {
-    description: String!
-    interval_km: Int!
-    interval_months: Int!
+input MotorcycleInput {
+    brand: Brand!
+    name: String!
+    engineSize: Int!
+}
+
+enum Brand {
+    APRILLA, BMW, DUCATI, HARLEY_DAVIDSON, HONDA, INDIAN, KAWASAKI, KTM, ROYAL_ENFIELD, SUZUKI, TRIUMPH, YAMAHA
 }

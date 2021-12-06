@@ -1,95 +1,127 @@
 package com.jpr.maintenance.graphql;
 
-import com.jpr.maintenance.database.model.TaskDetailsEntity;
-import com.jpr.maintenance.database.repository.TaskDetailsRepository;
-import com.jpr.maintenance.database.service.TaskDetailsService;
-import com.jpr.maintenance.database.testing.TaskDetailsRepositoryTestImpl;
-import graphql.execution.DataFetcherResult;
-import graphql.schema.DataFetcher;
+import com.jpr.maintenance.database.model.MotorcycleEntity;
+import com.jpr.maintenance.database.service.MotorcycleService;
 import graphql.schema.DataFetchingEnvironmentImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.jpr.maintenance.model.Brand.DUCATI;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class GraphQLDataFetchersTest {
+    private MotorcycleService service;
+    private GraphQLDataFetchers graphQLDataFetchers;
 
-    private final TaskDetailsRepository repository = new TaskDetailsRepositoryTestImpl();
-    private final TaskDetailsService service = new TaskDetailsService(repository);
-    private final GraphQLDataFetchers graphQLDataFetchers = new GraphQLDataFetchers(service);
-
-    @Test
-    void taskDetailsByIdOk() throws Exception {
-        Map<String, Object> arguments = Map.of("task_id", "0");
-        var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(arguments)
-            .build();
-        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById().getDataFetcher();
-        TaskDetailsEntity taskDetails = dataFetcher.get(environment);
-
-        assertNotNull(taskDetails);
+    @BeforeEach
+    void setup() {
+        service = mock(MotorcycleService.class);
+        graphQLDataFetchers = new GraphQLDataFetchers(service);
     }
 
     @Test
-    void taskDetailsByIdNull() throws Exception {
-        Map<String, Object> arguments = Map.of("task_id", "-1");
+    void motorcycleByIdOk() throws Exception {
+        when(service.findById(0L)).thenReturn(Mono.just(MotorcycleEntity.builder().build()));
+        Map<String, Object> arguments = Map.of("id", "0");
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<TaskDetailsEntity> dataFetcher = graphQLDataFetchers.getTaskDetailsById().getDataFetcher();
-        TaskDetailsEntity taskDetails = dataFetcher.get(environment);
+        var dataFetcher = graphQLDataFetchers.getMotorcycleById().getDataFetcher();
+        var motorcycle = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
-        assertNull(taskDetails);
+        assertNotNull(motorcycle);
     }
 
     @Test
-    void createTaskDetailsOk() throws Exception {
+    void mototcycleByIdNull() throws Exception {
+        when(service.findById(-1L)).thenReturn(Mono.empty());
+        Map<String, Object> arguments = Map.of("id", "-1");
+        var environment = new DataFetchingEnvironmentImpl.Builder()
+            .arguments(arguments)
+            .build();
+        var dataFetcher = graphQLDataFetchers.getMotorcycleById().getDataFetcher();
+        var motorcycle = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
+
+        assertNull(motorcycle);
+    }
+
+    @Test
+    void createMotorcycleOk() throws Exception {
+        when(service.save(any(MotorcycleEntity.class)))
+            .thenReturn(
+                Mono.just(
+                    MotorcycleEntity
+                        .builder()
+                        .brand(DUCATI)
+                        .name("999R")
+                        .engineSize(999)
+                        .build()
+                )
+            );
+
         Map<String, Object> map = Map.of(
-            "description", "description",
-            "interval_km", 5000,
-            "interval_months", 48
+            "brand", "DUCATI",
+            "name", "999R",
+            "engineSize", 999
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
-            .arguments(Map.of("taskDetailsInput", map))
+            .arguments(Map.of("motorcycleInput", map))
             .build();
-        DataFetcher<DataFetcherResult<TaskDetailsEntity>> dataFetcher = graphQLDataFetchers.createTaskDetails().getDataFetcher();
-        DataFetcherResult<TaskDetailsEntity> dataFetcherResult = dataFetcher.get(environment);
-        TaskDetailsEntity resultData = dataFetcherResult.getData();
+        var dataFetcher = graphQLDataFetchers.createMotorcycle().getDataFetcher();
+        var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
+        var resultData = dataFetcherResult.getData();
 
-        assertEquals("description", resultData.getDescription());
-        assertEquals(5000, resultData.getInterval_km());
-        assertEquals(48, resultData.getInterval_months());
+        assertEquals(DUCATI, resultData.getBrand());
+        assertEquals("999R", resultData.getName());
+        assertEquals(999, resultData.getEngineSize());
         assertTrue(dataFetcherResult.getErrors().isEmpty());
     }
 
     @Test
-    void createTaskDetailsUnhappyFlow() throws Exception {
+    void createMotorcycleUnhappyFlow() throws Exception {
+        when(service.save(any(MotorcycleEntity.class)))
+            .thenReturn(
+                Mono.just(
+                    MotorcycleEntity
+                        .builder()
+                        .brand(DUCATI)
+                        .name("999R")
+                        .engineSize(999)
+                        .build()
+                )
+            );
+
         Map<String, Object> arguments = Map.of(
-            "taskDetailsInput", new HashMap<>()
+            "motorcycleInput", new HashMap<>()
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<DataFetcherResult<TaskDetailsEntity>> dataFetcher = graphQLDataFetchers.createTaskDetails().getDataFetcher();
-        DataFetcherResult<TaskDetailsEntity> dataFetcherResult = dataFetcher.get(environment);
+        var dataFetcher = graphQLDataFetchers.createMotorcycle().getDataFetcher();
+        var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
         assertNull(dataFetcherResult.getData());
+        assertEquals("Field [brand] cannot be null", dataFetcherResult.getErrors().get(0).getMessage());
     }
 
     @Test
-    void deleteTaskDetails() throws Exception {
-        Map<String, Object> arguments = Map.of("task_id", "0");
+    void deleteTMotorcycleOk() throws Exception {
+        when(service.deleteById(0L)).thenReturn(Mono.just(true));
+        Map<String, Object> arguments = Map.of("id", "0");
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        DataFetcher<Void> dataFetcher = graphQLDataFetchers.deleteTaskDetails().getDataFetcher();
-        Void unused = dataFetcher.get(environment);
+        var dataFetcher = graphQLDataFetchers.deleteMotorcycle().getDataFetcher();
+        var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
-        assertNull(unused);
+        assertTrue(dataFetcherResult);
     }
 }
