@@ -11,7 +11,7 @@ public record User(String username, String password) {
             .flatMap(i -> Either.right(
                 new User(
                     input.username(),
-                    input.password() // hash+salt here?
+                    input.password() // TODO hash+salt
                 )
             ));
     }
