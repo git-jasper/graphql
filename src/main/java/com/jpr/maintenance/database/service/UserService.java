@@ -4,11 +4,9 @@ import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.repository.UserRepository;
 import com.jpr.maintenance.validation.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
