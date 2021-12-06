@@ -1,5 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
     <changeSet author="jonck" id="create_tables">
         <createTable tableName="motorcycle">
             <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="3">
@@ -28,6 +30,26 @@
             <column name="brand" value="DUCATI"/>
             <column name="name" value="999R"/>
             <column name="engine_size" value="999"/>
+        </insert>
+    </changeSet>
+    <changeSet author="jasper" id="create_user_table">
+        <createTable tableName="user">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="2">
+                <constraints primaryKey="true" primaryKeyName="user_pk"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jasper" id="insert_mock_user">
+        <insert tableName="user">
+            <column name="id" valueNumeric="1"/>
+            <column name="username" value="jasper"/>
+            <column name="password" value="secret"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

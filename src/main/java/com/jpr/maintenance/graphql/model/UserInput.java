@@ -1,3 +1,6 @@
 package com.jpr.maintenance.graphql.model;
 
-public record UserInput(String username, String password) {}
+import javax.validation.constraints.NotBlank;
+
+public record UserInput(@NotBlank String username,
+                        @NotBlank String password) {}

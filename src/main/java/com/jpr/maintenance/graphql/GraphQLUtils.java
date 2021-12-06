@@ -15,9 +15,23 @@ import java.util.function.Function;
 import static com.jpr.maintenance.validation.errors.InputValidationError.DATA_PERSISTENCE_ERROR;
 
 public class GraphQLUtils {
+
     public static <T> Either<GraphQLError, Mono<T>> saveEntity(T entity, Function<T, Mono<T>> persistenceFun, DataFetchingEnvironment environment) {
         try {
             return Either.right(persistenceFun.apply(entity));
+        } catch (DataAccessException e) {
+            return Either.left(
+                GraphqlErrorBuilder
+                    .newError(environment)
+                    .errorType(DATA_PERSISTENCE_ERROR)
+                    .build()
+            );
+        }
+    }
+
+    public static <T, U> Either<GraphQLError, Mono<T>> databaseFun(U input, Function<U, Mono<T>> retrievalFun, DataFetchingEnvironment environment) {
+        try {
+            return Either.right(retrievalFun.apply(input));
         } catch (DataAccessException e) {
             return Either.left(
                 GraphqlErrorBuilder
