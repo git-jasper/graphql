@@ -1,6 +1,5 @@
 package com.jpr.maintenance.reflection;
 
-import com.jpr.maintenance.graphql.GraphQLUtils;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
@@ -8,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -19,7 +19,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.jpr.maintenance.graphql.GraphQLUtils.createLeft;
-import static com.jpr.maintenance.validation.errors.InputValidationError.*;
+import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_INSTANTIATE_OBJECT;
+import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_RESOLVE_FIELD;
+import static com.jpr.maintenance.validation.errors.InputValidationError.NULL_VALUE;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -104,7 +106,9 @@ public class ObjectMapper {
     private static <T> Function<Object[], Either<GraphQLError, T>> newInstanceFun(Class<T> clazz, Class<?>[] constructorTypes) {
         return r -> {
             try {
-                return Either.right(clazz.getConstructor(constructorTypes).newInstance(r));
+                Constructor<T> declaredConstructor = clazz.getDeclaredConstructor(constructorTypes);
+                declaredConstructor.setAccessible(true);
+                return Either.right(declaredConstructor.newInstance(r));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 return Either.left(GraphqlErrorBuilder.newError()
                     .errorType(FAILED_TO_INSTANTIATE_OBJECT)

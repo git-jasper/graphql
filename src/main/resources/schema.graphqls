@@ -6,7 +6,7 @@ type Query {
 type Mutation {
     createMotorcycle(motorcycleInput: MotorcycleInput!): Motorcycle
     deleteMotorcycle(id: ID): Boolean
-    createUser(userInput: UserInput!): Boolean
+    createUser(userInput: UserInput!): User
     deleteUser(userInput: UserInput!): Boolean
 }
 
@@ -20,7 +20,6 @@ type Motorcycle {
 type User {
     id: ID
     username: String
-    password: String
 }
 
 input MotorcycleInput {

@@ -17,6 +17,7 @@ public class UserEntity {
     private Long id;
     private String username;
     private String password;
+    private String salt;
 
     public static Either<GraphQLError, UserEntity> of(UserInput input) {
         return ValidationService.validate(input)
@@ -24,6 +25,7 @@ public class UserEntity {
                 UserEntity.builder()
                     .username(input.username())
                     .password(input.password()) // TODO hash+salt
+                    .salt("salt")
                     .build())
             );
     }

@@ -1,7 +1,8 @@
-package com.jpr.maintenance.graphql;
+package com.jpr.maintenance.graphql.datafetcher;
 
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.service.MotorcycleService;
+import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.model.MotorcycleInput;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +11,14 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.*;
+import static com.jpr.maintenance.graphql.GraphQLUtils.errorFun;
+import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
+import static com.jpr.maintenance.graphql.GraphQLUtils.successFun;
 import static com.jpr.maintenance.reflection.ObjectMapper.toObject;
 
 @RequiredArgsConstructor
 @Configuration
-public class GraphQLDataFetchers {
+public class MotorcycleDataFetchers {
     private final MotorcycleService motorcycleService;
 
     @Bean
