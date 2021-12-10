@@ -1,9 +1,10 @@
-package com.jpr.maintenance.graphql.fetcher;
+package com.jpr.maintenance.graphql.datafetcher;
 
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.service.UserService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.model.UserInput;
+import com.jpr.maintenance.graphql.model.UserOutput;
 import com.jpr.maintenance.validation.model.User;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class UserDataFetchers {
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<Boolean>>> createUser() {
+    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<UserOutput>>> createUser() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "createUser",

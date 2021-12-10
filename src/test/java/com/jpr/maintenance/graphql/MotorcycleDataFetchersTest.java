@@ -2,6 +2,7 @@ package com.jpr.maintenance.graphql;
 
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.service.MotorcycleService;
+import com.jpr.maintenance.graphql.datafetcher.MotorcycleDataFetchers;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,19 +13,22 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.jpr.maintenance.model.Brand.DUCATI;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class GraphQLDataFetchersTest {
+class MotorcycleDataFetchersTest {
     private MotorcycleService service;
-    private GraphQLDataFetchers graphQLDataFetchers;
+    private MotorcycleDataFetchers motorcycleDataFetchers;
 
     @BeforeEach
     void setup() {
         service = mock(MotorcycleService.class);
-        graphQLDataFetchers = new GraphQLDataFetchers(service);
+        motorcycleDataFetchers = new MotorcycleDataFetchers(service);
     }
 
     @Test
@@ -34,7 +38,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        var dataFetcher = graphQLDataFetchers.getMotorcycleById().getDataFetcher();
+        var dataFetcher = motorcycleDataFetchers.getMotorcycleById().getDataFetcher();
         var motorcycle = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
         assertNotNull(motorcycle);
@@ -47,7 +51,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        var dataFetcher = graphQLDataFetchers.getMotorcycleById().getDataFetcher();
+        var dataFetcher = motorcycleDataFetchers.getMotorcycleById().getDataFetcher();
         var motorcycle = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
         assertNull(motorcycle);
@@ -75,7 +79,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(Map.of("motorcycleInput", map))
             .build();
-        var dataFetcher = graphQLDataFetchers.createMotorcycle().getDataFetcher();
+        var dataFetcher = motorcycleDataFetchers.createMotorcycle().getDataFetcher();
         var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
         var resultData = dataFetcherResult.getData();
 
@@ -105,7 +109,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        var dataFetcher = graphQLDataFetchers.createMotorcycle().getDataFetcher();
+        var dataFetcher = motorcycleDataFetchers.createMotorcycle().getDataFetcher();
         var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
         assertNull(dataFetcherResult.getData());
@@ -119,7 +123,7 @@ class GraphQLDataFetchersTest {
         var environment = new DataFetchingEnvironmentImpl.Builder()
             .arguments(arguments)
             .build();
-        var dataFetcher = graphQLDataFetchers.deleteMotorcycle().getDataFetcher();
+        var dataFetcher = motorcycleDataFetchers.deleteMotorcycle().getDataFetcher();
         var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
         assertTrue(dataFetcherResult);

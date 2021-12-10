@@ -8,13 +8,9 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface UserRepository extends ReactiveCrudRepository<UserEntity, Long> {
-    @Query("SELECT * FROM \"user\" WHERE username = :username AND \"password\" = :password")
-    Mono<UserEntity> findByUserNameAndPassword(String username, String password);
-
-    @Modifying
-    @Query("INSERT INTO \"user\" (username, \"password\") VALUES (&username, &password)")
-    Mono<Integer> saveUser(String username, String password);
+public interface UserRepositoryEntity extends ReactiveCrudRepository<UserEntity, Long>, EntityTemplateUserRepository {
+    @Query("SELECT * FROM \"user\" WHERE username = :username")
+    Mono<UserEntity> findByUserName(String username);
 
     @Modifying
     @Query("DELETE FROM \"user\" WHERE username = :username AND \"password\" = :password")
