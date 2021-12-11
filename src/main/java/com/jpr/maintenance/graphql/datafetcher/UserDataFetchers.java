@@ -59,18 +59,14 @@ public class UserDataFetchers {
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<Boolean>>> deleteUser() {
+    public DataFetcherWrapper<CompletableFuture<Boolean>> deleteUser() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "deleteUser",
-            dataFetchingEnvironment ->
-                toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
-                    .flatMap(User::of)
-                    .map(e -> serviceCall(e, userService::deleteByUser))
-                    .fold(
-                        errorFutureFun(),
-                        successFutureFun()
-                    )
+            dataFetchingEnvironment -> {
+                String id = dataFetchingEnvironment.getArgument("id");
+                return userService.deleteById(Long.valueOf(id)).toFuture();
+            }
         );
     }
 }

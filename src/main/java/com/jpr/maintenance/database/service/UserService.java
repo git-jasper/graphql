@@ -27,8 +27,7 @@ public class UserService {
             .map(Either::get);
     }
 
-    public Mono<Boolean> deleteByUser(final User user) {
-        return userRepository.removeByUsernameAndPassword(user.username(), user.plainPassword())
-            .map(i -> i == 1);
+    public Mono<Boolean> deleteById(final Long id) {
+        return userRepository.removeById(id).map(i -> i == 1);
     }
 }

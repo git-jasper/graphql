@@ -7,7 +7,7 @@ type Mutation {
     createMotorcycle(motorcycleInput: MotorcycleInput!): Motorcycle
     deleteMotorcycle(id: ID): Boolean
     createUser(userInput: UserInput!): User
-    deleteUser(userInput: UserInput!): Boolean
+    deleteUser(id: ID!): Boolean
 }
 
 type Motorcycle {

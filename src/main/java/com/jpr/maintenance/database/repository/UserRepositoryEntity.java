@@ -13,6 +13,6 @@ public interface UserRepositoryEntity extends ReactiveCrudRepository<UserEntity,
     Mono<UserEntity> findByUserName(String username);
 
     @Modifying
-    @Query("DELETE FROM \"user\" WHERE username = :username AND \"password\" = :password")
-    Mono<Integer> removeByUsernameAndPassword(String username, String password);
+    @Query("DELETE FROM \"user\" WHERE id = :id")
+    Mono<Integer> removeById(Long id);
 }
