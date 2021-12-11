@@ -34,7 +34,7 @@
     </changeSet>
     <changeSet author="jasper" id="create_user_table">
         <createTable tableName="user">
-            <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="2">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="1">
                 <constraints primaryKey="true" primaryKeyName="user_pk"/>
             </column>
             <column name="username" type="VARCHAR(255)">
