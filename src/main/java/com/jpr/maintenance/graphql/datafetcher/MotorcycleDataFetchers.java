@@ -41,7 +41,7 @@ public class MotorcycleDataFetchers {
             dataFetchingEnvironment ->
                 toObject(dataFetchingEnvironment.getArgument("motorcycleInput"), MotorcycleInput.class)
                     .flatMap(MotorcycleEntity::of)
-                    .flatMap(e -> saveEntity(e, motorcycleService::save, dataFetchingEnvironment))
+                    .map(e -> saveEntity(e, motorcycleService::save))
                     .fold(
                         errorFutureFun(),
                         successFutureFun()

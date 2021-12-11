@@ -1,5 +1,6 @@
 package com.jpr.maintenance.graphql;
 
+import com.jpr.maintenance.DataAccessExceptionHandler;
 import com.jpr.maintenance.tailrecursion.TailCall;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -24,6 +25,7 @@ public class GraphQLProvider {
     public GraphQL graphQL(GraphQLSchema schema) {
         return GraphQL
             .newGraphQL(schema)
+            .defaultDataFetcherExceptionHandler(new DataAccessExceptionHandler())
             .build();
     }
 
