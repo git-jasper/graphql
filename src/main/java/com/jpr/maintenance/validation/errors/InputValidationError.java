@@ -11,6 +11,7 @@ public enum InputValidationError implements ErrorClassification {
     INVALID_FIELD(fun("Field [%s] does not comply to specified format")),
     DATA_ACCESS_ERROR(fun("Error occurred while trying to process request")),
     USER_ACCESS_ERROR(fun("Failed to access user")),
+    FAILED_TO_INSTANTIATE_PASSWORD(fun("Failed to instantiate password object")),
     NULL_VALUE(fun("Field [%s] cannot be null"));
 
     private final Function<String, String> errorMessageFun;

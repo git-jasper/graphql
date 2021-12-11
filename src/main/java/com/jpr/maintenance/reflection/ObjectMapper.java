@@ -1,7 +1,6 @@
 package com.jpr.maintenance.reflection;
 
 import graphql.GraphQLError;
-import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -110,11 +109,7 @@ public class ObjectMapper {
                 declaredConstructor.setAccessible(true);
                 return Either.right(declaredConstructor.newInstance(r));
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                return Either.left(GraphqlErrorBuilder.newError()
-                    .errorType(FAILED_TO_INSTANTIATE_OBJECT)
-                    .message(FAILED_TO_INSTANTIATE_OBJECT.getErrorMessage(clazz.getSimpleName()))
-                    .build()
-                );
+                return createLeft(FAILED_TO_INSTANTIATE_OBJECT, clazz.getSimpleName());
             }
         };
     }

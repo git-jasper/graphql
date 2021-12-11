@@ -48,12 +48,4 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="jasper" id="insert_mock_user">
-        <insert tableName="user">
-            <column name="id" valueNumeric="1"/>
-            <column name="username" value="jasper"/>
-            <column name="password" value="secret"/>
-            <column name="salt" value="salt"/>
-        </insert>
-    </changeSet>
 </databaseChangeLog>

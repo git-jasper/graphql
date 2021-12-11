@@ -3,7 +3,6 @@ package com.jpr.maintenance.database.model;
 import com.jpr.maintenance.model.Password;
 import com.jpr.maintenance.validation.model.User;
 import graphql.GraphQLError;
-import graphql.GraphqlErrorBuilder;
 import io.vavr.control.Either;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.function.Function;
 
+import static com.jpr.maintenance.graphql.GraphQLUtils.createLeft;
 import static com.jpr.maintenance.validation.errors.InputValidationError.USER_ACCESS_ERROR;
 
 @Data
@@ -31,11 +31,7 @@ public class UserEntity {
     }
 
     private Function<Password, GraphQLError> error() {
-        return p -> GraphqlErrorBuilder
-            .newError()
-            .message(USER_ACCESS_ERROR.getErrorMessage("")) //TODO weird for errors without parameters
-            .errorType(USER_ACCESS_ERROR)
-            .build();
+        return p -> createLeft(USER_ACCESS_ERROR, "").getLeft();
     }
 
     public static Either<GraphQLError, UserEntity> of(User user) {
