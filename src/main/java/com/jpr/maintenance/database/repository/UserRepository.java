@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface UserRepositoryEntity extends ReactiveCrudRepository<UserEntity, Long>, EntityTemplateUserRepository {
+public interface UserRepository extends ReactiveCrudRepository<UserEntity, Long>, EntityTemplateUserRepository {
     @Query("SELECT * FROM \"user\" WHERE username = :username")
     Mono<UserEntity> findByUserName(String username);
 

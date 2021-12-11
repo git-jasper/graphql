@@ -1,4 +1,4 @@
-package com.jpr.maintenance;
+package com.jpr.maintenance.graphql.exception;
 
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
@@ -12,6 +12,7 @@ import java.util.concurrent.CompletionException;
 
 import static com.jpr.maintenance.validation.errors.InputValidationError.DATA_ACCESS_ERROR;
 
+@SuppressWarnings("deprecation")
 public class DataAccessExceptionHandler implements DataFetcherExceptionHandler {
 
     private final DataFetcherExceptionHandler parent = new SimpleDataFetcherExceptionHandler();
