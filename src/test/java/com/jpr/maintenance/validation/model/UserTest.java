@@ -17,7 +17,7 @@ public class UserTest {
         assertTrue(userEither.isRight());
         var user = userEither.get();
         assertEquals("myName", user.username());
-        assertEquals("myPassword", user.password());
+        assertEquals("myPassword", user.plainPassword());
     }
 
     @Test
