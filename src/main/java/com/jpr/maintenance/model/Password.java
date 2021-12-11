@@ -2,7 +2,7 @@ package com.jpr.maintenance.model;
 
 import graphql.GraphQLError;
 import io.vavr.control.Either;
-import lombok.extern.slf4j.Slf4j;
+import lombok.EqualsAndHashCode;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -14,7 +14,7 @@ import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_
 import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;
 
-@Slf4j
+@EqualsAndHashCode
 public class Password {
 
     private final static SecureRandom SECURE_RANDOM = new SecureRandom();
