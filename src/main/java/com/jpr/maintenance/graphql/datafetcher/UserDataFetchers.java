@@ -29,7 +29,7 @@ public class UserDataFetchers {
     public DataFetcherWrapper<CompletableFuture<DataFetcherResult<UserOutput>>> getUser() {
         return new DataFetcherWrapper<>(
             "Query",
-            "userByInput",
+            "findByUser",
             dataFetchingEnvironment ->
                 toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(User::of)

@@ -1,6 +1,6 @@
 type Query {
     motorcycleById(id: ID): Motorcycle
-    userByInput(userInput: UserInput!): User
+    findByUser(userInput: UserInput!): User
 }
 
 type Mutation {
