@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.errorFun;
+import static com.jpr.maintenance.graphql.GraphQLUtils.errorFutureFun;
 import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
-import static com.jpr.maintenance.graphql.GraphQLUtils.successFun;
+import static com.jpr.maintenance.graphql.GraphQLUtils.successFutureFun;
 import static com.jpr.maintenance.reflection.ObjectMapper.toObject;
 
 @RequiredArgsConstructor
@@ -43,8 +43,8 @@ public class MotorcycleDataFetchers {
                     .flatMap(MotorcycleEntity::of)
                     .flatMap(e -> saveEntity(e, motorcycleService::save, dataFetchingEnvironment))
                     .fold(
-                        errorFun(),
-                        successFun()
+                        errorFutureFun(),
+                        successFutureFun()
                     )
         );
     }
