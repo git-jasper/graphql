@@ -4,38 +4,46 @@ import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.repository.UserRepository;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
-import com.jpr.maintenance.testutil.DummyUserRepository;
 import com.jpr.maintenance.validation.model.User;
 import graphql.GraphQLError;
 import io.vavr.control.Either;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
+import static com.jpr.maintenance.model.Password.of;
 import static com.jpr.maintenance.validation.errors.InputValidationError.USER_ACCESS_ERROR;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class UserServiceTest {
 
-    private final UserRepository repository = new DummyUserRepository();
+    private  static final User USER = User.of(new UserInput("USER", "secret")).get();
+    private  static final UserEntity ENTITY = createEntity(USER);
+
+    private final UserRepository repository = mock(UserRepository.class);
     private final UserService service = new UserService(repository);
 
     @Test
     void findByUserOk() {
-        User user = User.of(new UserInput("user", "secret")).get();
-        Either<GraphQLError, UserOutput> result = service.findByUser(user).block();
+        when(repository.findByUserName(USER.username())).thenReturn(Mono.just(ENTITY));
+        Either<GraphQLError, UserOutput> result = service.findByUser(USER).block();
 
         assertNotNull(result);
         assertTrue(result.isRight());
-        assertEquals(user.username(), result.get().username());
+        assertEquals(USER.username(), result.get().username());
     }
 
     @Test
     void findByUserError() {
-        User user = User.of(new UserInput("user", "wrong")).get();
-        Either<GraphQLError, UserOutput> result = service.findByUser(user).block();
+        User other = User.of(new UserInput("USER", "wrong")).get();
+
+        when(repository.findByUserName(USER.username())).thenReturn(Mono.just(ENTITY));
+        Either<GraphQLError, UserOutput> result = service.findByUser(other).block();
 
         assertNotNull(result);
         assertTrue(result.isLeft());
@@ -44,19 +52,17 @@ class UserServiceTest {
 
     @Test
     void save() {
-        UserEntity entity = UserEntity.builder()
-            .id(1L)
-            .username("user")
-            .build();
-        UserOutput result = service.save(entity).block();
+        when(repository.saveUser(ENTITY)).thenReturn(Mono.just(ENTITY));
+        UserOutput result = service.save(ENTITY).block();
 
         assertNotNull(result);
         assertEquals(1L, result.id());
-        assertEquals("user", result.username());
+        assertEquals("USER", result.username());
     }
 
     @Test
     void deleteByIdTrue() {
+        when(repository.removeById(1L)).thenReturn(Mono.just(1));
         Boolean result = service.deleteById(1L).block();
 
         assertEquals(TRUE, result);
@@ -64,8 +70,18 @@ class UserServiceTest {
 
     @Test
     void deleteByIdFalse() {
+        when(repository.removeById(0L)).thenReturn(Mono.just(0));
         Boolean result = service.deleteById(0L).block();
 
         assertEquals(FALSE, result);
+    }
+
+    private static UserEntity createEntity(final User user) {
+        return UserEntity.builder()
+            .id(1L)
+            .username(user.username())
+            .password(of(user.plainPassword(), "salt").get().password())
+            .salt("salt")
+            .build();
     }
 }
