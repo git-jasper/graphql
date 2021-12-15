@@ -9,10 +9,12 @@ public enum InputValidationError implements ErrorClassification {
     FAILED_TO_INSTANTIATE_OBJECT(fun("Failed to instantiate object of type [%s]")),
     FAILED_TO_RESOLVE_FIELD(fun("Failed to resolve field [%s]")),
     INVALID_FIELD(fun("Field [%s] does not comply to specified format")),
-    DATA_ACCESS_ERROR(fun("Error occurred while trying to process request")),
-    USER_ACCESS_ERROR(fun("Failed to access user")),
     FAILED_TO_INSTANTIATE_PASSWORD(fun("Failed to instantiate password object")),
-    NULL_VALUE(fun("Field [%s] cannot be null"));
+    NULL_VALUE(fun("Field [%s] cannot be null")),
+    // TODO below are not input validation error
+    DATA_ACCESS_ERROR(fun("Error occurred while trying to access the database")),
+    USER_ACCESS_ERROR(fun("Failed to access user")),
+    UNEXPECTED_ERROR(fun("Unexpected error occurred, caused by [%s]"));
 
     private final Function<String, String> errorMessageFun;
 

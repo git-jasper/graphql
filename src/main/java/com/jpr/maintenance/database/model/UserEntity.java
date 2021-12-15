@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.function.Function;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.createLeft;
+import static com.jpr.maintenance.graphql.GraphQLUtils.createError;
 import static com.jpr.maintenance.validation.errors.InputValidationError.USER_ACCESS_ERROR;
 
 @Data
@@ -31,7 +31,7 @@ public class UserEntity {
     }
 
     private Function<Password, GraphQLError> error() {
-        return p -> createLeft(USER_ACCESS_ERROR, "").getLeft();
+        return p -> createError(USER_ACCESS_ERROR, "");
     }
 
     public static Either<GraphQLError, UserEntity> of(User user) {
