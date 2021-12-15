@@ -1,5 +1,7 @@
 package com.jpr.maintenance.graphql;
 
+import com.jpr.maintenance.graphql.exception.ThrowableHandler;
+import com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider;
 import com.jpr.maintenance.validation.errors.InputValidationError;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
@@ -11,6 +13,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public class GraphQLUtils {
+
+    private static final ThrowableHandler HANDLER = ThrowableHandlerProvider.getHandlerChain();
 
     public static <T> Mono<T> saveEntity(T entity, Function<T, Mono<T>> persistenceFun) {
         return persistenceFun.apply(entity);
@@ -25,7 +29,9 @@ public class GraphQLUtils {
     }
 
     public static <T> Function<Mono<T>, CompletableFuture<DataFetcherResult<T>>> successFutureFun() {
-        return r -> r.map(v -> DataFetcherResult.<T>newResult().data(v).build()).toFuture();
+        return r -> r.map(v -> DataFetcherResult.<T>newResult().data(v).build())
+            .toFuture()
+            .exceptionallyAsync(HANDLER::handle);
     }
 
     public static <T> Function<GraphQLError, CompletableFuture<DataFetcherResult<T>>> errorFutureFun() {
@@ -33,7 +39,9 @@ public class GraphQLUtils {
     }
 
     public static <T> Function<Mono<Either<GraphQLError, T>>, CompletableFuture<DataFetcherResult<T>>> foldToFutureFun() {
-        return m -> m.map(foldFun()).toFuture();
+        return m -> m.map(foldFun())
+            .toFuture()
+            .exceptionallyAsync(HANDLER::handle);
     }
 
     public static <T> Function<Either<GraphQLError,T>, DataFetcherResult<T>> foldFun() {
@@ -49,10 +57,14 @@ public class GraphQLUtils {
     }
 
     public static <T> Either<GraphQLError, T> createLeft(InputValidationError classification, String errorArg) {
-        return Either.left(GraphqlErrorBuilder
+        return Either.left(createError(classification, errorArg));
+    }
+
+    public static <T> GraphQLError createError(InputValidationError classification, String errorArg) {
+        return GraphqlErrorBuilder
             .newError()
             .message(classification.getErrorMessage(errorArg))
             .errorType(classification)
-            .build());
+            .build();
     }
 }
