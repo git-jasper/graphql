@@ -1,36 +1,20 @@
 package com.jpr.maintenance.graphql.exception;
 
-import graphql.GraphQLError;
-import graphql.GraphqlErrorBuilder;
-import graphql.execution.DataFetcherExceptionHandler;
-import graphql.execution.DataFetcherExceptionHandlerParameters;
-import graphql.execution.DataFetcherExceptionHandlerResult;
-import graphql.execution.SimpleDataFetcherExceptionHandler;
+import graphql.execution.DataFetcherResult;
 import org.springframework.dao.DataAccessException;
 
-import java.util.concurrent.CompletionException;
-
+import static com.jpr.maintenance.graphql.GraphQLUtils.createError;
 import static com.jpr.maintenance.validation.errors.InputValidationError.DATA_ACCESS_ERROR;
 
-public class DataAccessExceptionHandler implements DataFetcherExceptionHandler {
-
-    private final DataFetcherExceptionHandler parent = new SimpleDataFetcherExceptionHandler();
+public class DataAccessExceptionHandler extends ThrowableHandler {
 
     @Override
-    public DataFetcherExceptionHandlerResult onException(DataFetcherExceptionHandlerParameters handlerParameters) {
-        Throwable exception = this.unwrap(handlerParameters.getException());
-        if (exception instanceof DataAccessException) {
-            GraphQLError error = GraphqlErrorBuilder
-                .newError(handlerParameters.getDataFetchingEnvironment())
-                .message(DATA_ACCESS_ERROR.getErrorMessage(""))
-                .errorType(DATA_ACCESS_ERROR)
+    public <T> DataFetcherResult<T> handle(Throwable throwable) {
+        if (throwable instanceof DataAccessException) {
+            return DataFetcherResult.<T>newResult()
+                .error(createError(DATA_ACCESS_ERROR, ""))
                 .build();
-            return DataFetcherExceptionHandlerResult.newResult().error(error).build();
         }
-        return parent.onException(handlerParameters);
-    }
-
-    protected Throwable unwrap(Throwable exception) {
-        return exception.getCause() != null && exception instanceof CompletionException ? exception.getCause() : exception;
+        return next.handle(throwable);
     }
 }
