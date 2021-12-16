@@ -2,8 +2,8 @@ package com.jpr.maintenance.graphql.exception;
 
 public class ThrowableHandlerProvider {
 
-    private static final ThrowableHandler HANDLER = new DataAccessExceptionHandler()
-        .next(new DefaultHandler());
+    private static final ThrowableHandler HANDLER = new DefaultHandler()
+        .nextOf(new DataAccessExceptionHandler());
 
     private ThrowableHandlerProvider() {}
 

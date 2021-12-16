@@ -21,6 +21,6 @@ public class EntityTemplateUserRepositoryImpl implements EntityTemplateUserRepos
             .bind("$3", userEntity.getSalt())
             .fetch()
             .first()
-            .map(result -> toObject(result, UserEntity.class).getOrNull());
+            .mapNotNull(result -> toObject(result, UserEntity.class).getOrNull());
     }
 }

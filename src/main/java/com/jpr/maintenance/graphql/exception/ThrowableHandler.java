@@ -6,9 +6,9 @@ public abstract class ThrowableHandler {
 
     protected ThrowableHandler next;
 
-    public ThrowableHandler next(ThrowableHandler next) {
-        this.next = next;
-        return this;
+    public ThrowableHandler nextOf(ThrowableHandler other) {
+        other.next = this;
+        return other;
     }
 
     public abstract <T> DataFetcherResult<T> handle(Throwable throwable);
