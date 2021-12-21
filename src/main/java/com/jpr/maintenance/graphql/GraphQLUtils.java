@@ -3,6 +3,7 @@ package com.jpr.maintenance.graphql;
 import com.jpr.maintenance.graphql.exception.ThrowableHandler;
 import com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider;
 import com.jpr.maintenance.validation.errors.InputValidationError;
+import com.jpr.maintenance.validation.errors.InputValidationException;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import graphql.execution.DataFetcherResult;
@@ -12,7 +13,7 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public class GraphQLUtils {
+public class GraphQLUtils<T> {
 
     private static final ThrowableHandler HANDLER = ThrowableHandlerProvider.getHandlerChain();
 
@@ -54,6 +55,19 @@ public class GraphQLUtils {
 
     public static <T> Function<T, DataFetcherResult<T>> successFun() {
         return r -> DataFetcherResult.<T>newResult().data(r).build();
+    }
+
+    public static <T> Function<InputValidationException, Mono<DataFetcherResult<T>>> reactiveErrorFun() {
+        return l -> Mono.just(DataFetcherResult.<T>newResult().error(transformEx().apply(l)).build());
+    }
+
+    private static Function<InputValidationException, GraphQLError> transformEx() {
+        return ex -> GraphqlErrorBuilder
+            .newError()
+            .errorType(ex.getError())
+            .message(ex.getMessage())
+            .path(ex.getPath())
+            .build();
     }
 
     public static <T> Either<GraphQLError, T> createLeft(InputValidationError classification, String errorArg) {

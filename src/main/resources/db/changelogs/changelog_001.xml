@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
-    <changeSet author="jonck" id="create_tables">
+    <changeSet author="jonck" id="create_motorcycle_table">
         <createTable tableName="motorcycle">
             <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="3">
                 <constraints primaryKey="true" primaryKeyName="motorcycle_pk"/>
@@ -17,6 +17,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <addUniqueConstraint columnNames="brand,name,engine_size" constraintName="motorcycle_brand_name_engine_size" tableName="motorcycle"/>
     </changeSet>
     <changeSet author="jonck" id="insert_mock_data">
         <insert tableName="motorcycle">
