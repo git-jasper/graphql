@@ -1,5 +1,6 @@
 package com.jpr.maintenance.graphql.datafetcher;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.service.MotorcycleService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Mono;
 
 import javax.validation.ConstraintViolation;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -31,6 +33,7 @@ import static java.util.stream.Collectors.toList;
 @Configuration
 public class MotorcycleDataFetchers {
     private final MotorcycleService motorcycleService;
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Bean
     public DataFetcherWrapper<CompletableFuture<MotorcycleEntity>> getMotorcycleById() {
@@ -66,7 +69,7 @@ public class MotorcycleDataFetchers {
             "Mutation",
             "createMotorcycle",
             dataFetchingEnvironment ->
-                MotorcycleInput.of(dataFetchingEnvironment.getArgument("motorcycleInput"))
+                deserializeToPojo(dataFetchingEnvironment.getArgument("motorcycleInput"), MotorcycleInput.class)
                     .flatMap(MotorcycleEntity::ofReactive)
                     .flatMap(e -> saveEntity(e, motorcycleService::save))
                     .map(m -> GraphQLUtils.<MotorcycleEntity>successFun().apply(m))
@@ -75,9 +78,13 @@ public class MotorcycleDataFetchers {
         );
     }
 
-
-
-
+    private <T> Mono<T> deserializeToPojo(Map<String, Object> map, Class<T> clazz) {
+        try {
+            return Mono.just(OBJECT_MAPPER.convertValue(map, clazz));
+        } catch (Exception ex) {
+            return Mono.error(ex);
+        }
+    }
 
     @Bean
     public DataFetcherWrapper<CompletableFuture<Boolean>> deleteMotorcycle() {

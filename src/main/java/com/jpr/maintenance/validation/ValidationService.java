@@ -25,12 +25,8 @@ public class ValidationService {
                 INVALID_FIELD,
                 validationResult
                     .stream()
-                    .map(ConstraintViolation::getMessage)
-                    .collect(joining(" ")),
-                validationResult
-                    .stream()
-                    .map(r -> String.format("Invalid field: %s, constraint: %s, invalid value: %s", r.getPropertyPath().toString(), r.getMessage(), r.getInvalidValue()))
-                    .collect(toList())
+                    .map(r -> String.format("Field %s, constraint: %s, actual value: %s.", r.getPropertyPath().toString(), r.getMessage(), r.getInvalidValue()))
+                    .collect(joining(" "))
             )
         );
     }

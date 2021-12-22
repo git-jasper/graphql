@@ -57,19 +57,6 @@ public class GraphQLUtils<T> {
         return r -> DataFetcherResult.<T>newResult().data(r).build();
     }
 
-    public static <T> Function<InputValidationException, Mono<DataFetcherResult<T>>> reactiveErrorFun() {
-        return l -> Mono.just(DataFetcherResult.<T>newResult().error(transformEx().apply(l)).build());
-    }
-
-    private static Function<InputValidationException, GraphQLError> transformEx() {
-        return ex -> GraphqlErrorBuilder
-            .newError()
-            .errorType(ex.getError())
-            .message(ex.getMessage())
-            .path(ex.getPath())
-            .build();
-    }
-
     public static <T> Either<GraphQLError, T> createLeft(InputValidationError classification, String errorArg) {
         return Either.left(createError(classification, errorArg));
     }

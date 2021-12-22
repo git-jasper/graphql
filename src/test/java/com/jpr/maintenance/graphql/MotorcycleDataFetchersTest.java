@@ -113,7 +113,9 @@ class MotorcycleDataFetchersTest {
         var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
         assertNull(dataFetcherResult.getData());
-        assertEquals("Field [brand] cannot be null", dataFetcherResult.getErrors().get(0).getMessage());
+        assertTrue(dataFetcherResult.getErrors().get(0).getMessage().contains("Field engineSize, constraint: must not be null, actual value: null."));
+        assertTrue(dataFetcherResult.getErrors().get(0).getMessage().contains("Field brand, constraint: must not be null, actual value: null."));
+        assertTrue(dataFetcherResult.getErrors().get(0).getMessage().contains("Field name, constraint: must not be empty, actual value: null."));
     }
 
     @Test
