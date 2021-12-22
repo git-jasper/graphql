@@ -128,6 +128,6 @@ class MotorcycleDataFetchersTest {
         var dataFetcher = motorcycleDataFetchers.deleteMotorcycle().getDataFetcher();
         var dataFetcherResult = dataFetcher.get(environment).get(1L, TimeUnit.SECONDS);
 
-        assertTrue(dataFetcherResult);
+        assertTrue(dataFetcherResult.getData());
     }
 }
