@@ -1,4 +1,4 @@
-package com.jpr.maintenance.graphql.handler;
+package com.jpr.maintenance.graphql.exception;
 
 import lombok.RequiredArgsConstructor;
 

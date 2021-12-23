@@ -2,27 +2,26 @@ package com.jpr.maintenance.validation.model;
 
 import com.jpr.maintenance.graphql.model.MotorcycleInput;
 import com.jpr.maintenance.model.Brand;
+import com.jpr.maintenance.validation.errors.InputValidationException;
 import org.junit.jupiter.api.Test;
+import reactor.test.StepVerifier;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.jpr.maintenance.validation.errors.InputValidationError.INVALID_FIELD;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 class MotorcycleTest {
     @Test
     void createMotorcycleOk() {
-        final String name = "Shorter than 255 characters";
-        var motorcycleInput = new MotorcycleInput(Brand.BMW, name, 500);
-        var motorcycleEither = Motorcycle.of(motorcycleInput);
+        String name = "Shorter than 255 characters";
+        int engineSize = 500;
+        var motorcycleInput = new MotorcycleInput(Brand.BMW, name, engineSize);
+        var motorcycleMono = Motorcycle.of(motorcycleInput);
 
-        assertTrue(motorcycleEither.isRight());
-        var motorcycle = motorcycleEither.get();
-        assertEquals(name, motorcycle.name());
-        assertEquals(Brand.BMW, motorcycle.brand());
-        assertEquals(500, motorcycle.engineSize());
+        StepVerifier
+            .create(motorcycleMono)
+            .expectNextMatches(m -> m.name().equals(name) && m.brand().equals(Brand.BMW) && m.engineSize().equals(engineSize))
+            .expectComplete()
+            .verify();
     }
 
     @Test
@@ -32,33 +31,38 @@ class MotorcycleTest {
             .mapToObj(i -> "a")
             .collect(Collectors.joining());
         var motorcycleInput = new MotorcycleInput(Brand.BMW, name, 500);
-        var motorcycleEither = Motorcycle.of(motorcycleInput);
+        var motorcycleMono = Motorcycle.of(motorcycleInput);
 
-        assertTrue(motorcycleEither.isLeft());
-        assertEquals(INVALID_FIELD, motorcycleEither.getLeft().getErrorType());
-        assertEquals("Invalid field: name, constraint: length must be between 1 and 255, invalid value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", motorcycleEither.getLeft().getPath().get(0).toString());
+        StepVerifier
+            .create(motorcycleMono)
+            .expectErrorMatches(t -> t instanceof InputValidationException && t.getMessage().equals("Field name, constraint: length must be between 1 and 255, actual value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa."))
+            .verify();
     }
 
     @Test
     void brandNull() {
         var motorcycleInput = new MotorcycleInput(null, "something", 500);
-        var motorcycleEither = Motorcycle.of(motorcycleInput);
+        var motorcycleMono = Motorcycle.of(motorcycleInput);
 
-        assertTrue(motorcycleEither.isLeft());
-        assertEquals(INVALID_FIELD, motorcycleEither.getLeft().getErrorType());
-        assertEquals("Invalid field: brand, constraint: must not be null, invalid value: null", motorcycleEither.getLeft().getPath().get(0).toString());
+        StepVerifier
+            .create(motorcycleMono)
+            .expectErrorMatches(t -> t instanceof InputValidationException && t.getMessage().equals("Field brand, constraint: must not be null, actual value: null."))
+            .verify();
     }
 
     @Test
     void everythingWrong() {
         var motorcycleInput = new MotorcycleInput(null, "", -1);
-        var motorcycleEither = Motorcycle.of(motorcycleInput);
+        var motorcycleMono = Motorcycle.of(motorcycleInput);
 
-        assertTrue(motorcycleEither.isLeft());
-        assertEquals(INVALID_FIELD, motorcycleEither.getLeft().getErrorType());
-        assertTrue(motorcycleEither.getLeft().getPath().contains("Invalid field: name, constraint: length must be between 1 and 255, invalid value: "));
-        assertTrue(motorcycleEither.getLeft().getPath().contains("Invalid field: brand, constraint: must not be null, invalid value: null"));
-        assertTrue(motorcycleEither.getLeft().getPath().contains("Invalid field: engineSize, constraint: must be greater than or equal to 1, invalid value: -1"));
-        assertTrue(motorcycleEither.getLeft().getPath().contains("Invalid field: name, constraint: must not be empty, invalid value: "));
+        StepVerifier
+            .create(motorcycleMono)
+            .expectErrorMatches(t -> t instanceof InputValidationException
+                && t.getMessage().contains("Field name, constraint: length must be between 1 and 255, actual value: ")
+                && t.getMessage().contains("Field name, constraint: must not be empty, actual value: ")
+                && t.getMessage().contains("Field brand, constraint: must not be null, actual value: null")
+                && t.getMessage().contains("Field engineSize, constraint: must be greater than or equal to 1, actual value: -1")
+            )
+            .verify();
     }
 }

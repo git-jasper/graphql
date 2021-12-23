@@ -1,15 +1,14 @@
 package com.jpr.maintenance.model;
 
-import graphql.GraphQLError;
-import io.vavr.control.Either;
+import com.jpr.maintenance.validation.errors.InputValidationException;
 import lombok.EqualsAndHashCode;
+import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.createLeft;
 import static com.jpr.maintenance.validation.errors.InputValidationError.FAILED_TO_INSTANTIATE_PASSWORD;
 import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;
@@ -34,13 +33,13 @@ public class Password {
         return salt;
     }
 
-    public static Either<GraphQLError, Password> of(String plainPassword) {
+    public static Mono<Password> of(String plainPassword) {
         final byte[] salt = generateSalt();
         return generateHash(plainPassword, salt)
             .map(p -> new Password(toBase64(p), toBase64(salt)));
     }
 
-    public static Either<GraphQLError, Password> of(String plainPassword, String salt) {
+    public static Mono<Password> of(String plainPassword, String salt) {
         return generateHash(plainPassword, fromBase64(salt))
             .map(p -> new Password(toBase64(p), salt));
     }
@@ -51,13 +50,13 @@ public class Password {
         return salt;
     }
 
-    private static Either<GraphQLError, byte[]> generateHash(String plainPassword, byte[] salt) {
+    private static Mono<byte[]> generateHash(String plainPassword, byte[] salt) {
         try {
             MessageDigest instance = MessageDigest.getInstance("SHA-512");
             instance.update(salt);
-            return Either.right(instance.digest(plainPassword.getBytes(StandardCharsets.UTF_8)));
+            return Mono.just(instance.digest(plainPassword.getBytes(StandardCharsets.UTF_8)));
         } catch (NoSuchAlgorithmException e) {
-            return createLeft(FAILED_TO_INSTANTIATE_PASSWORD, "");
+            return Mono.error(new InputValidationException(FAILED_TO_INSTANTIATE_PASSWORD, ""));
         }
     }
 

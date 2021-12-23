@@ -2,8 +2,7 @@ package com.jpr.maintenance.validation.model;
 
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.validation.ValidationService;
-import graphql.GraphQLError;
-import io.vavr.control.Either;
+import reactor.core.publisher.Mono;
 
 public class User {
     private final String username;
@@ -22,13 +21,13 @@ public class User {
         return plainPassword;
     }
 
-    public static Either<GraphQLError, User> of(UserInput input) {
+    public static Mono<User> of(UserInput input) {
         return ValidationService.validate(input)
-            .flatMap(i -> Either.right(
+            .map(i ->
                 new User(
-                    input.username(),
-                    input.password()
+                    i.username(),
+                    i.password()
                 )
-            ));
+            );
     }
 }

@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.CompletableFuture;
 
 import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
-import static com.jpr.maintenance.graphql.datafetcher.DataFetcherUtil.deserializeToPojo;
-import static com.jpr.maintenance.graphql.handler.ThrowableHandlerProvider.handlerFunction;
+import static com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider.handlerFunction;
+import static com.jpr.maintenance.util.ReflectionUtil.deserializeToPojo;
 
 @RequiredArgsConstructor
 @Configuration
@@ -43,7 +43,7 @@ public class MotorcycleDataFetchers {
             "createMotorcycle",
             dataFetchingEnvironment ->
                 deserializeToPojo(dataFetchingEnvironment.getArgument("motorcycleInput"), MotorcycleInput.class)
-                    .flatMap(MotorcycleEntity::ofReactive)
+                    .flatMap(MotorcycleEntity::of)
                     .flatMap(e -> saveEntity(e, motorcycleService::save))
                     .map(m -> GraphQLUtils.<MotorcycleEntity>successFun().apply(m))
                     .onErrorResume(handlerFunction())

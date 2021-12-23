@@ -10,4 +10,4 @@ import javax.validation.constraints.NotNull;
 
 public record MotorcycleInput(@NotNull Brand brand,
                               @NotEmpty @Length(min=1, max=255) String name,
-                              @NotNull @Max(10000) @Min(1) Integer engineSize) {}
+                              @NotNull @Min(1) @Max(10000) Integer engineSize) {}

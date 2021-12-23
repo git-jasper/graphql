@@ -4,84 +4,94 @@ import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.repository.UserRepository;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
+import com.jpr.maintenance.model.Password;
+import com.jpr.maintenance.validation.errors.InputValidationException;
 import com.jpr.maintenance.validation.model.User;
-import graphql.GraphQLError;
-import io.vavr.control.Either;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
-import static com.jpr.maintenance.model.Password.of;
-import static com.jpr.maintenance.validation.errors.InputValidationError.USER_ACCESS_ERROR;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class UserServiceTest {
-
-    private  static final User USER = User.of(new UserInput("USER", "secret")).get();
-    private  static final UserEntity ENTITY = createEntity(USER);
+    private static final String USER_NAME = "USER";
+    private static final Mono<User> USER = User.of(new UserInput(USER_NAME, "secret"));
+    private static final Mono<UserEntity> ENTITY = USER.flatMap(UserServiceTest::createEntity);
 
     private final UserRepository repository = mock(UserRepository.class);
     private final UserService service = new UserService(repository);
 
     @Test
     void findByUserOk() {
-        when(repository.findByUserName(USER.username())).thenReturn(Mono.just(ENTITY));
-        Either<GraphQLError, UserOutput> result = service.findByUser(USER).block();
+        when(repository.findByUserName(USER_NAME)).thenReturn(ENTITY);
+        Mono<UserOutput> result = USER.flatMap(service::findByUser);
 
-        assertNotNull(result);
-        assertTrue(result.isRight());
-        assertEquals(USER.username(), result.get().username());
+        StepVerifier
+            .create(result)
+            .expectNextMatches(u -> u != null && u.username().equals(USER_NAME))
+            .expectComplete()
+            .verify();
     }
 
     @Test
     void findByUserError() {
-        User other = User.of(new UserInput("USER", "wrong")).get();
+        Mono<User> other = User.of(new UserInput(USER_NAME, "wrong"));
 
-        when(repository.findByUserName(USER.username())).thenReturn(Mono.just(ENTITY));
-        Either<GraphQLError, UserOutput> result = service.findByUser(other).block();
+        when(repository.findByUserName(USER_NAME)).thenReturn(ENTITY);
+        Mono<UserOutput> result = other.flatMap(service::findByUser);
 
-        assertNotNull(result);
-        assertTrue(result.isLeft());
-        assertEquals(USER_ACCESS_ERROR, result.getLeft().getErrorType());
+        StepVerifier
+            .create(result)
+            .expectError(InputValidationException.class)
+            .verify();
     }
 
     @Test
     void save() {
-        when(repository.saveUser(ENTITY)).thenReturn(Mono.just(ENTITY));
-        UserOutput result = service.save(ENTITY).block();
+        when(repository.saveUser(any(UserEntity.class))).thenReturn(ENTITY);
+        Mono<UserOutput> result = ENTITY.flatMap(service::save);
 
-        assertNotNull(result);
-        assertEquals(1L, result.id());
-        assertEquals("USER", result.username());
+        StepVerifier
+            .create(result)
+            .expectNextMatches(u -> u != null && u.id().equals(1L) && u.username().equals(USER_NAME))
+            .expectComplete()
+            .verify();
     }
 
     @Test
     void deleteByIdTrue() {
         when(repository.removeById(1L)).thenReturn(Mono.just(1));
-        Boolean result = service.deleteById(1L).block();
+        Mono<Boolean> result = service.deleteById(1L);
 
-        assertEquals(TRUE, result);
+        StepVerifier
+            .create(result)
+            .expectNextMatches(b -> b)
+            .expectComplete()
+            .verify();
     }
 
     @Test
     void deleteByIdFalse() {
         when(repository.removeById(0L)).thenReturn(Mono.just(0));
-        Boolean result = service.deleteById(0L).block();
+        Mono<Boolean> result = service.deleteById(0L);
 
-        assertEquals(FALSE, result);
+        StepVerifier
+            .create(result)
+            .expectNextMatches(b -> !b)
+            .expectComplete()
+            .verify();
     }
 
-    private static UserEntity createEntity(final User user) {
-        return UserEntity.builder()
-            .id(1L)
-            .username(user.username())
-            .password(of(user.plainPassword(), "salt").get().password())
-            .salt("salt")
-            .build();
+    private static Mono<UserEntity> createEntity(final User user) {
+        return Password.of(user.plainPassword(), "salt")
+            .map(p -> UserEntity.builder()
+                .id(1L)
+                .username(user.username())
+                .password(p.password())
+                .salt(p.salt())
+                .build()
+            );
     }
 }

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import reactor.core.publisher.Mono;
 
-import static com.jpr.maintenance.reflection.ObjectMapper.toObject;
+import static com.jpr.maintenance.util.ReflectionUtil.deserializeToPojo;
 
 @RequiredArgsConstructor
 public class EntityTemplateUserRepositoryImpl implements EntityTemplateUserRepository {
@@ -21,6 +21,6 @@ public class EntityTemplateUserRepositoryImpl implements EntityTemplateUserRepos
             .bind("$3", userEntity.getSalt())
             .fetch()
             .first()
-            .mapNotNull(result -> toObject(result, UserEntity.class).getOrNull());
+            .flatMap(result -> deserializeToPojo(result, UserEntity.class));
     }
 }
