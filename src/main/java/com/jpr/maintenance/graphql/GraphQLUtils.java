@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
-public class GraphQLUtils<T> {
+public class GraphQLUtils {
 
     public static <T> Mono<T> saveEntity(T entity, Function<T, Mono<T>> persistenceFun) {
         return persistenceFun.apply(entity);
@@ -22,7 +22,7 @@ public class GraphQLUtils<T> {
         return r -> DataFetcherResult.<T>newResult().data(r).build();
     }
 
-    public static <T> GraphQLError createError(InputValidationError classification, String errorArg) {
+    public static GraphQLError createError(InputValidationError classification, String errorArg) {
         return GraphqlErrorBuilder
             .newError()
             .message(classification.getErrorMessage(errorArg))
