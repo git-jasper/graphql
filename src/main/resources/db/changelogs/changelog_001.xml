@@ -65,7 +65,7 @@
             </column>
         </createTable>
         <addUniqueConstraint columnNames="user_id,motorcycle_id" constraintName="user_motorcycle_user_id_motorcycle_id" tableName="user_motorcycle"/>
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
-        <addForeignKeyConstraint baseColumnNames="motorcycle_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_motorcycle_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="motorcycle"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_user_id" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+        <addForeignKeyConstraint baseColumnNames="motorcycle_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_motorcycle_id" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="motorcycle"/>
     </changeSet>
 </databaseChangeLog>

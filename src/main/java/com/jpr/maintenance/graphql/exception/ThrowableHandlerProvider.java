@@ -6,6 +6,7 @@ import graphql.execution.DataFetcherResult;
 import org.springframework.dao.DataAccessException;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -18,9 +19,13 @@ public class ThrowableHandlerProvider {
     public static <T> Function<Throwable, Mono<DataFetcherResult<T>>> handlerFunction() {
         return t -> Mono.just(
             ThrowableHandlerProvider.<T>getHandlerChain()
-                .handle(t, ex -> DataFetcherResult.<T>newResult()
-                    .error(createError(UNEXPECTED_ERROR, ex.getClass().getSimpleName()))
-                    .build()
+                .handle(t, ex -> {
+                        Arrays.stream(ex.getStackTrace())
+                                .forEach(e -> System.out.println(e.toString()));
+                        return DataFetcherResult.<T>newResult()
+                            .error(createError(UNEXPECTED_ERROR, ex.getClass().getSimpleName()))
+                            .build();
+                    }
                 )
         );
     }

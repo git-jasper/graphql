@@ -9,6 +9,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 import static com.jpr.maintenance.validation.errors.InputValidationError.USER_ACCESS_ERROR;
 
 @Getter
@@ -22,16 +24,18 @@ public class UserEntity {
     private String username;
     private String password;
     private String salt;
+    private List<UserMotorcycleEntity> motorcycles;
 
     // for Jackson
     public UserEntity() {}
 
     // for builder
-    public UserEntity(Long id, String username, String password, String salt) {
+    public UserEntity(Long id, String username, String password, String salt, List<UserMotorcycleEntity> motorcycles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.salt = salt;
+        this.motorcycles = motorcycles;
     }
 
     public Mono<UserEntity> verify(User user) { //TODO other class's responsibility?

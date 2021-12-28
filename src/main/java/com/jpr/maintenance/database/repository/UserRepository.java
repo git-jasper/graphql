@@ -9,10 +9,11 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface UserRepository extends ReactiveCrudRepository<UserEntity, Long>, EntityTemplateUserRepository {
-    @Query("SELECT * FROM \"user\" WHERE username = :username")
-    Mono<UserEntity> findByUserName(String username);
-
     @Modifying
     @Query("DELETE FROM \"user\" WHERE id = :id")
     Mono<Integer> removeById(Long id);
+
+    @Modifying
+    @Query("DELETE FROM \"user\"")
+    Mono<Void> deleteAll();
 }

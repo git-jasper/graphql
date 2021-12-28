@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
-public class UserMotorcycleIT extends AbstractIntegrationTest {
+public class UserMotorcycleRepositoryIT extends AbstractIntegrationTest {
     private static final String USER_NAME = "user";
     private static final String PASSWORD = "secret";
     private static final String SALT = "salt";
@@ -31,6 +31,7 @@ public class UserMotorcycleIT extends AbstractIntegrationTest {
 
     @BeforeAll
     void init() {
+        userRepository.deleteAll().block();
         user = Password.of(PASSWORD, SALT)
             .map(p -> UserEntity.builder()
                 .username(USER_NAME)
@@ -48,8 +49,7 @@ public class UserMotorcycleIT extends AbstractIntegrationTest {
         Mono<UserMotorcycleEntity> result = userMotorcycleRepository.saveUserMotorcycle(user.getId(), 1L, "red");
         Predicate<UserMotorcycleEntity> predicate = e -> {
             MotorcycleEntity motorcycle = e.getMotorcycle();
-            return e.getUser() != null
-                && e.getColor().equals("red")
+            return e.getColor().equals("red")
                 && motorcycle.getId().equals(1L)
                 && motorcycle.getName().equals("GSX-1300R")
                 && motorcycle.getBrand().equals(Brand.SUZUKI)
@@ -70,8 +70,7 @@ public class UserMotorcycleIT extends AbstractIntegrationTest {
 
         Predicate<UserMotorcycleEntity> predicate = e -> {
             MotorcycleEntity motorcycle = e.getMotorcycle();
-            return e.getUser() != null
-                && e.getColor().equals("blue")
+            return e.getColor().equals("blue")
                 && motorcycle.getId().equals(2L)
                 && motorcycle.getName().equals("999R")
                 && motorcycle.getBrand().equals(Brand.DUCATI)

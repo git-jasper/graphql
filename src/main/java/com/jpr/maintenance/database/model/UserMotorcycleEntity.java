@@ -15,7 +15,6 @@ import org.springframework.data.relational.core.mapping.Table;
 public class UserMotorcycleEntity {
     @Id
     private Long id;
-    private UserEntity user;
     private MotorcycleEntity motorcycle;
     private String color;
 }

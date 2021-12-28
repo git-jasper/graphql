@@ -33,9 +33,6 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
                         motorcycle_id,
                         color )
                 SELECT
-                    u.id AS "user.id",\s
-                    u.username AS "user.username",\s
-                    u.password AS "user.password",\s
                     m.id AS "motorcycle.id",\s
                     m.brand AS "motorcycle.brand",\s
                     m.name AS "motorcycle.name",\s
@@ -43,17 +40,13 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
                     ins.color AS "color",
                     ins.id AS "id"
                 FROM
-                    "user" u
+                    motorcycle m
                 LEFT JOIN
                     ins
                 ON
-                    u.id = ins.user_id
-                LEFT JOIN
-                    motorcycle m
-                ON
                     m.id = ins.motorcycle_id
                 WHERE
-                    u.id=$1
+                    ins.user_id=$1
                 """)
             .bind("$1", userId)
             .bind("$2", motorcycleId)
@@ -63,12 +56,6 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
             .map(m -> UserMotorcycleEntity.builder()
                 .id((Long) m.get("id"))
                 .color((String) m.get("color"))
-                .user(UserEntity.builder()
-                    .id((Long) m.get("user.id"))
-                    .username((String) m.get("user.username"))
-                    .password((String) m.get("user.password"))
-                    .build()
-                )
                 .motorcycle(
                     MotorcycleEntity.builder()
                         .id((Long) m.get("motorcycle.id"))

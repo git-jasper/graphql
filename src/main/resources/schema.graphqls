@@ -17,9 +17,16 @@ type Motorcycle {
     engineSize: Int
 }
 
+type UserMotorcycle {
+    id: ID
+    color: String
+    motorcycle: Motorcycle
+}
+
 type User {
     id: ID
     username: String
+    motorcycles: [UserMotorcycle]
 }
 
 input MotorcycleInput {
