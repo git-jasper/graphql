@@ -49,4 +49,23 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="jonck" id="create_user_motorcycle_table">
+        <createTable tableName="user_motorcycle">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="1">
+                <constraints primaryKey="true" primaryKeyName="user_motorcycle_pk"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="motorcycle_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="user_id,motorcycle_id" constraintName="user_motorcycle_user_id_motorcycle_id" tableName="user_motorcycle"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_user_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+        <addForeignKeyConstraint baseColumnNames="motorcycle_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_motorcycle_id" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="motorcycle"/>
+    </changeSet>
 </databaseChangeLog>
