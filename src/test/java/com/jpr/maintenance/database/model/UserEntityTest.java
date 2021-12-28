@@ -1,38 +1,52 @@
 package com.jpr.maintenance.database.model;
 
 import com.jpr.maintenance.graphql.model.UserInput;
+import com.jpr.maintenance.model.Password;
+import com.jpr.maintenance.validation.errors.InputValidationException;
 import com.jpr.maintenance.validation.model.User;
-import graphql.GraphQLError;
-import io.vavr.control.Either;
 import org.junit.jupiter.api.Test;
-
-import static com.jpr.maintenance.model.Password.of;
-import static com.jpr.maintenance.validation.errors.InputValidationError.USER_ACCESS_ERROR;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 class UserEntityTest {
-
-    private final UserEntity entity = UserEntity.builder()
-        .password(of("secret", "salt").get().password())
-        .salt("salt")
-        .build();
+    private static final String USER_NAME = "user";
+    private static final String PASSWORD = "secret";
+    private static final String SALT = "salt";
+    private final Mono<UserEntity> entity = Password.of(PASSWORD, SALT)
+        .map(p -> UserEntity.builder()
+            .id(1L)
+            .username(USER_NAME)
+            .password(p.password())
+            .salt(p.salt())
+            .build()
+        );
 
     @Test
     void verifyOk() {
-        User user = User.of(new UserInput("user", "secret")).get();
-        Either<GraphQLError, UserEntity> result = entity.verify(user);
+        Mono<User> user = User.of(new UserInput(USER_NAME, PASSWORD));
+        Mono<UserEntity> result = entity
+            .flatMap(e -> user
+                .flatMap(e::verify)
+            );
 
-        assertTrue(result.isRight());
-        assertEquals(entity, result.get());
+        StepVerifier
+            .create(result.zipWith(entity))
+            .expectNextMatches(t -> t.getT1().equals(t.getT2()))
+            .expectComplete()
+            .verify();
     }
 
     @Test
     void verifyError() {
-        User user = User.of(new UserInput("user", "wrong")).get();
-        Either<GraphQLError, UserEntity> result = entity.verify(user);
+        Mono<User> user = User.of(new UserInput("user", "wrong"));
+        Mono<UserEntity> result = entity
+            .flatMap(e -> user
+                .flatMap(e::verify)
+            );
 
-        assertTrue(result.isLeft());
-        assertEquals(USER_ACCESS_ERROR, result.getLeft().getErrorType());
+        StepVerifier
+            .create(result)
+            .expectError(InputValidationException.class)
+            .verify();
     }
 }

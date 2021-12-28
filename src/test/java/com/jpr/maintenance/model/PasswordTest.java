@@ -1,27 +1,35 @@
 package com.jpr.maintenance.model;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 class PasswordTest {
 
     @Test
     void ofOk() {
-        Password result = Password.of("secret").get();
+        Mono<Password> result = Password.of("secret");
 
-        assertNotEquals("secret", result.password());
-        assertNotNull(result.salt());
+        StepVerifier
+            .create(result)
+            .expectNextMatches(p -> !p.password().equals("secret") && p.salt() != null)
+            .expectComplete()
+            .verify();
     }
 
     @Test
     void ofConsistent() {
         String plainPassword = "secret";
-        Password first = Password.of(plainPassword).get();
-        Password second = Password.of(plainPassword, first.salt()).get();
+        Mono<Password> first = Password.of(plainPassword);
+        Mono<Password> second = first
+            .flatMap(p -> Password.of(plainPassword, p.salt()));
 
-        assertEquals(first, second);
+        var zipped = first.zipWith(second);
+
+        StepVerifier
+            .create(zipped)
+            .expectNextMatches(t -> t.getT1().password().equals(t.getT2().password()))
+            .expectComplete()
+            .verify();
     }
 }

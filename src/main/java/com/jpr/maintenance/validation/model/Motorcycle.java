@@ -3,18 +3,17 @@ package com.jpr.maintenance.validation.model;
 import com.jpr.maintenance.graphql.model.MotorcycleInput;
 import com.jpr.maintenance.model.Brand;
 import com.jpr.maintenance.validation.ValidationService;
-import graphql.GraphQLError;
-import io.vavr.control.Either;
+import reactor.core.publisher.Mono;
 
 public record Motorcycle(Brand brand, String name, Integer engineSize) {
-    public static Either<GraphQLError, Motorcycle> of(MotorcycleInput input) {
+    public static Mono<Motorcycle> of(MotorcycleInput input) {
         return ValidationService.validate(input)
-            .flatMap(i -> Either.right(
+            .map(m ->
                 new Motorcycle(
-                    input.brand(),
-                    input.name(),
-                    input.engineSize()
+                    m.brand(),
+                    m.name(),
+                    m.engineSize()
                 )
-            ));
+            );
     }
 }

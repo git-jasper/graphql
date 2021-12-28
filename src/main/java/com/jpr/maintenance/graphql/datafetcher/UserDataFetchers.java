@@ -3,6 +3,7 @@ package com.jpr.maintenance.graphql.datafetcher;
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.service.UserService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
+import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
 import com.jpr.maintenance.validation.model.User;
@@ -13,12 +14,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.jpr.maintenance.graphql.GraphQLUtils.errorFutureFun;
-import static com.jpr.maintenance.graphql.GraphQLUtils.foldToFutureFun;
 import static com.jpr.maintenance.graphql.GraphQLUtils.serviceCall;
-import static com.jpr.maintenance.graphql.GraphQLUtils.serviceCallEither;
-import static com.jpr.maintenance.graphql.GraphQLUtils.successFutureFun;
-import static com.jpr.maintenance.reflection.ObjectMapper.toObject;
+import static com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider.handlerFunction;
+import static com.jpr.maintenance.util.ReflectionUtil.deserializeToPojo;
 
 @RequiredArgsConstructor
 @Configuration
@@ -31,13 +29,12 @@ public class UserDataFetchers {
             "Query",
             "findByUser",
             dataFetchingEnvironment ->
-                toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
+                deserializeToPojo(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(User::of)
-                    .map(e -> serviceCallEither(e, userService::findByUser))
-                    .fold(
-                        errorFutureFun(),
-                        foldToFutureFun()
-                    )
+                    .flatMap(e -> serviceCall(e, userService::findByUser))
+                    .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
+                    .onErrorResume(handlerFunction())
+                    .toFuture()
         );
     }
 
@@ -47,25 +44,27 @@ public class UserDataFetchers {
             "Mutation",
             "createUser",
             dataFetchingEnvironment ->
-                toObject(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
+                deserializeToPojo(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(User::of)
                     .flatMap(UserEntity::of)
-                    .map(e -> serviceCall(e, userService::save))
-                    .fold(
-                        errorFutureFun(),
-                        successFutureFun()
-                    )
+                    .flatMap(e -> serviceCall(e, userService::save))
+                    .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
+                    .onErrorResume(handlerFunction())
+                    .toFuture()
         );
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<Boolean>> deleteUser() {
+    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<Boolean>>> deleteUser() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "deleteUser",
             dataFetchingEnvironment -> {
                 String id = dataFetchingEnvironment.getArgument("id");
-                return userService.deleteById(Long.valueOf(id)).toFuture();
+                return userService.deleteById(Long.valueOf(id))
+                    .map(m -> GraphQLUtils.<Boolean>successFun().apply(m))
+                    .onErrorResume(handlerFunction())
+                    .toFuture();
             }
         );
     }
