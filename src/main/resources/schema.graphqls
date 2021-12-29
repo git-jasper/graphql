@@ -1,11 +1,12 @@
 type Query {
-    motorcycleById(id: ID): Motorcycle
+    motorcycleById(id: ID!): Motorcycle
     findByUser(userInput: UserInput!): User
 }
 
 type Mutation {
     createMotorcycle(motorcycleInput: MotorcycleInput!): Motorcycle
-    deleteMotorcycle(id: ID): Boolean
+    deleteMotorcycle(id: ID!): Boolean
+    createUserMotorcycle(userMotorcycleInput: UserMotorcycleInput!): UserMotorcycle
     createUser(userInput: UserInput!): User
     deleteUser(id: ID!): Boolean
 }
@@ -38,6 +39,12 @@ input MotorcycleInput {
 input UserInput {
     username: String!
     password: String!
+}
+
+input UserMotorcycleInput {
+    userId: ID!
+    motorcycleId: ID!
+    color: String!
 }
 
 enum Brand {

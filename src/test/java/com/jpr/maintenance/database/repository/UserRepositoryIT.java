@@ -1,6 +1,7 @@
 package com.jpr.maintenance.database.repository;
 
 import com.jpr.maintenance.database.model.UserEntity;
+import com.jpr.maintenance.graphql.model.UserMotorcycleInput;
 import com.jpr.maintenance.model.Brand;
 import com.jpr.maintenance.model.Password;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,8 +63,8 @@ public class UserRepositoryIT extends AbstractIntegrationTest {
     void shouldHaveMotorcycles() {
         userRepository.findByUserName(USER_NAME)
             .flatMapMany(u -> Flux.concat(
-                userMotorcycleRepository.saveUserMotorcycle(u.getId(), 1L, "Blue"),
-                userMotorcycleRepository.saveUserMotorcycle(u.getId(), 2L, "Red")
+                userMotorcycleRepository.saveUserMotorcycle(new UserMotorcycleInput(u.getId(), 1L, "Blue")),
+                userMotorcycleRepository.saveUserMotorcycle(new UserMotorcycleInput(u.getId(), 2L, "Red"))
             ))
             .blockLast(Duration.ofSeconds(2L));
 

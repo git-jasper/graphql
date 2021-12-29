@@ -1,8 +1,8 @@
 package com.jpr.maintenance.database.repository;
 
 import com.jpr.maintenance.database.model.MotorcycleEntity;
-import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.model.UserMotorcycleEntity;
+import com.jpr.maintenance.graphql.model.UserMotorcycleInput;
 import com.jpr.maintenance.model.Brand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
@@ -13,7 +13,7 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
     private final R2dbcEntityTemplate template;
 
     @Override
-    public Mono<UserMotorcycleEntity> saveUserMotorcycle(Long userId, Long motorcycleId, String color) {
+    public Mono<UserMotorcycleEntity> saveUserMotorcycle(UserMotorcycleInput input) {
         return template.getDatabaseClient()
             .sql("""
                 WITH ins AS
@@ -48,9 +48,9 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
                 WHERE
                     ins.user_id=$1
                 """)
-            .bind("$1", userId)
-            .bind("$2", motorcycleId)
-            .bind("$3", color)
+            .bind("$1", input.userId())
+            .bind("$2", input.motorcycleId())
+            .bind("$3", input.color())
             .fetch()
             .first()
             .map(m -> UserMotorcycleEntity.builder()

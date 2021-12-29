@@ -3,6 +3,7 @@ package com.jpr.maintenance.database.repository;
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.model.UserMotorcycleEntity;
+import com.jpr.maintenance.graphql.model.UserMotorcycleInput;
 import com.jpr.maintenance.model.Brand;
 import com.jpr.maintenance.model.Password;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,7 +47,7 @@ public class UserMotorcycleRepositoryIT extends AbstractIntegrationTest {
     @Test
     @Order(1)
     void shouldPersistUserMotorcycle() {
-        Mono<UserMotorcycleEntity> result = userMotorcycleRepository.saveUserMotorcycle(user.getId(), 1L, "red");
+        Mono<UserMotorcycleEntity> result = userMotorcycleRepository.saveUserMotorcycle(new UserMotorcycleInput(user.getId(), 1L, "red"));
         Predicate<UserMotorcycleEntity> predicate = e -> {
             MotorcycleEntity motorcycle = e.getMotorcycle();
             return e.getColor().equals("red")
@@ -66,7 +67,7 @@ public class UserMotorcycleRepositoryIT extends AbstractIntegrationTest {
     @Test
     @Order(2)
     void shouldHaveSecondMotorcycleWithOtherMotorcycleAlreadyInDb() {
-        Mono<UserMotorcycleEntity> result = userMotorcycleRepository.saveUserMotorcycle(user.getId(), 2L, "blue");
+        Mono<UserMotorcycleEntity> result = userMotorcycleRepository.saveUserMotorcycle(new UserMotorcycleInput(user.getId(), 2L, "blue"));
 
         Predicate<UserMotorcycleEntity> predicate = e -> {
             MotorcycleEntity motorcycle = e.getMotorcycle();
