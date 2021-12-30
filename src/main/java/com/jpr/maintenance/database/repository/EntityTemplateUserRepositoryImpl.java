@@ -4,13 +4,15 @@ import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.model.UserMotorcycleEntity;
 import com.jpr.maintenance.model.Brand;
+import com.jpr.maintenance.tailrecursion.TailCall;
+import io.vavr.collection.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+import static com.jpr.maintenance.tailrecursion.TailCalls.done;
 import static com.jpr.maintenance.util.ReflectionUtil.deserializeToPojo;
 
 @RequiredArgsConstructor
@@ -64,28 +66,44 @@ public class EntityTemplateUserRepositoryImpl implements EntityTemplateUserRepos
             .fetch()
             .all()
             .bufferUntilChanged(result -> result.get("id"))
-            .map(list -> UserEntity.builder()
-                .id((Long) list.get(0).get("id"))
-                .username((String) list.get(0).get("username"))
-                .password((String) list.get(0).get("password"))
-                .salt((String) list.get(0).get("salt"))
-                .motorcycles(
-                    list.get(0).get("user_motorcycle.id") != null
-                        ? list.stream()
-                        .map(entry -> UserMotorcycleEntity.builder()
-                            .id((Long) entry.get("user_motorcycle.id"))
-                            .color((String) entry.get("user_motorcycle.color"))
-                            .motorcycle(MotorcycleEntity.builder()
-                                .id((Long) entry.get("motorcycle.id"))
-                                .brand(entry.get("motorcycle.brand") != null ? Brand.valueOf((String) entry.get("motorcycle.brand")) : null)
-                                .name((String) entry.get("motorcycle.name"))
-                                .engineSize((Integer) entry.get("motorcycle.engine_size"))
-                                .build())
-                            .build())
-                        .collect(Collectors.toList())
-                        : Collections.emptyList()
-                )
-                .build())
+            .map(this::constructUserEntity)
             .next();
+    }
+
+    private UserEntity constructUserEntity(java.util.List<Map<String, Object>> data) {
+        List<Map<String, Object>> vavrList = List.ofAll(data);
+        Map<String, Object> head = vavrList.head();
+        return UserEntity.builder()
+            .id((Long) head.get("id"))
+            .username((String) head.get("username"))
+            .password((String) head.get("password"))
+            .salt((String) head.get("salt"))
+            .motorcycles(
+                constructMotorcyclesRecursively(
+                    List.empty(),
+                    vavrList.filter(e -> e.get("user_motorcycle.id") != null)).invoke().asJava())
+            .build();
+    }
+
+    private TailCall<List<UserMotorcycleEntity>> constructMotorcyclesRecursively(List<UserMotorcycleEntity> accumulator,
+                                                                                 List<Map<String, Object>> data) {
+        if (data.isEmpty()) {
+            return done(accumulator);
+        } else {
+            Map<String, Object> entry = data.head();
+            return () -> constructMotorcyclesRecursively(accumulator.append(
+                UserMotorcycleEntity.builder()
+                    .id((Long) entry.get("user_motorcycle.id"))
+                    .color((String) entry.get("user_motorcycle.color"))
+                    .motorcycle(MotorcycleEntity.builder()
+                        .id((Long) entry.get("motorcycle.id"))
+                        .brand(entry.get("motorcycle.brand") != null ? Brand.valueOf((String) entry.get("motorcycle.brand")) : null)
+                        .name((String) entry.get("motorcycle.name"))
+                        .engineSize((Integer) entry.get("motorcycle.engine_size"))
+                        .build())
+                    .build()),
+                data.tail()
+            );
+        }
     }
 }
