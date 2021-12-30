@@ -68,4 +68,21 @@
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_user_id" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
         <addForeignKeyConstraint baseColumnNames="motorcycle_id" baseTableName="user_motorcycle" constraintName="user_motorcycle_motorcycle_id" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="motorcycle"/>
     </changeSet>
+    <changeSet author="jonck" id="create_part_table">
+        <createTable tableName="part">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" startWith="1">
+                <constraints primaryKey="true" primaryKeyName="part_pk"/>
+            </column>
+            <column name="brand" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="part_nr" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="brand,part_nr" constraintName="part_brand_part_nr" tableName="part"/>
+    </changeSet>
 </databaseChangeLog>

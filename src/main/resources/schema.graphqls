@@ -7,6 +7,7 @@ type Mutation {
     createMotorcycle(motorcycleInput: MotorcycleInput!): Motorcycle
     deleteMotorcycle(id: ID!): Boolean
     createUserMotorcycle(userMotorcycleInput: UserMotorcycleInput!): UserMotorcycle
+    createPart(partInput: PartInput!): Part
     createUser(userInput: UserInput!): User
     deleteUser(id: ID!): Boolean
 }
@@ -30,6 +31,13 @@ type User {
     motorcycles: [UserMotorcycle]
 }
 
+type Part {
+    id: ID
+    brand: String
+    partNr: String
+    description: String
+}
+
 input MotorcycleInput {
     brand: Brand!
     name: String!
@@ -45,6 +53,12 @@ input UserMotorcycleInput {
     userId: ID!
     motorcycleId: ID!
     color: String!
+}
+
+input PartInput {
+    brand: String!
+    partNr: String!
+    description: String!
 }
 
 enum Brand {

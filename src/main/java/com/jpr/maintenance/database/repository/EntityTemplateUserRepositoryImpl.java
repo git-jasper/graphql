@@ -97,7 +97,7 @@ public class EntityTemplateUserRepositoryImpl implements EntityTemplateUserRepos
                     .color((String) entry.get("user_motorcycle.color"))
                     .motorcycle(MotorcycleEntity.builder()
                         .id((Long) entry.get("motorcycle.id"))
-                        .brand(entry.get("motorcycle.brand") != null ? Brand.valueOf((String) entry.get("motorcycle.brand")) : null)
+                        .brand(Brand.fromString((String) entry.get("motorcycle.brand")))
                         .name((String) entry.get("motorcycle.name"))
                         .engineSize((Integer) entry.get("motorcycle.engine_size"))
                         .build())

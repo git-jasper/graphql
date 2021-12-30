@@ -1,5 +1,6 @@
 package com.jpr.maintenance.database.repository;
 
+import com.jpr.maintenance.AbstractIntegrationTest;
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.graphql.model.UserMotorcycleInput;
 import com.jpr.maintenance.model.Brand;
