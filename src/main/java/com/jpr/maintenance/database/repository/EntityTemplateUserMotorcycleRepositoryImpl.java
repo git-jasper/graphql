@@ -33,9 +33,9 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
                         motorcycle_id,
                         color )
                 SELECT
-                    m.id AS "motorcycle.id",\s
-                    m.brand AS "motorcycle.brand",\s
-                    m.name AS "motorcycle.name",\s
+                    m.id AS "motorcycle.id",
+                    m.brand AS "motorcycle.brand",
+                    m.name AS "motorcycle.name",
                     m.engine_size  AS "motorcycle.engine_size",
                     ins.color AS "color",
                     ins.id AS "id"
@@ -47,6 +47,8 @@ public class EntityTemplateUserMotorcycleRepositoryImpl implements EntityTemplat
                     m.id = ins.motorcycle_id
                 WHERE
                     ins.user_id=$1
+                AND
+                    ins.motorcycle_id=$2
                 """)
             .bind("$1", input.userId())
             .bind("$2", input.motorcycleId())
