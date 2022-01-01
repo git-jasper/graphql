@@ -1,6 +1,6 @@
 type Query {
     motorcycleById(id: ID!): Motorcycle
-    findByUser(userInput: UserInput!): User
+    findByUser(findUserInput: FindUserInput!): User
 }
 
 type Mutation {
@@ -24,6 +24,7 @@ type UserMotorcycle {
     id: ID
     color: String
     motorcycle: Motorcycle
+    parts: [Part]
 }
 
 type User {
@@ -53,6 +54,10 @@ input MotorcycleInput {
 input UserInput {
     username: String!
     password: String!
+}
+
+input FindUserInput {
+    username: String!
 }
 
 input UserMotorcycleInput {

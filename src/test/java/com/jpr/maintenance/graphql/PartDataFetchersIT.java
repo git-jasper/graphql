@@ -2,9 +2,12 @@ package com.jpr.maintenance.graphql;
 
 import com.jpr.maintenance.AbstractIntegrationTest;
 import com.jpr.maintenance.database.model.PartEntity;
+import com.jpr.maintenance.database.repository.PartRepository;
 import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetchingEnvironmentImpl;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,13 +15,21 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static com.jpr.maintenance.model.Brand.DUCATI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 public class PartDataFetchersIT extends AbstractIntegrationTest {
     @Autowired
     private DataFetcherWrapper<CompletableFuture<DataFetcherResult<PartEntity>>> partDataFetcher;
+
+    @Autowired
+    private PartRepository partRepository;
+
+    @BeforeAll
+    void init() {
+        partRepository.deleteAll().block();
+    }
 
     @Test
     void shouldSavePart() throws Exception {
