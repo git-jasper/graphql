@@ -4,6 +4,7 @@ import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.service.UserService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.GraphQLUtils;
+import com.jpr.maintenance.graphql.model.FindUserInput;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
 import com.jpr.maintenance.validation.model.User;
@@ -31,9 +32,8 @@ public class UserDataFetchers {
             "Query",
             "findByUser",
             dataFetchingEnvironment ->
-                deserializeToPojo(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
-                    .flatMap(User::of)
-                    .flatMap(e -> serviceCall(e, userService::findByUser))
+                deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
+                    .flatMap(e -> serviceCall(e, userService::findByUserName))
                     .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
                     .onErrorResume(handlerFunction())
                     .toFuture()

@@ -2,6 +2,7 @@ package com.jpr.maintenance.database.service;
 
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.repository.UserRepository;
+import com.jpr.maintenance.graphql.model.FindUserInput;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
 import com.jpr.maintenance.model.Password;
@@ -26,7 +27,7 @@ class UserServiceTest {
     @Test
     void findByUserOk() {
         when(repository.findByUserName(USER_NAME)).thenReturn(ENTITY);
-        Mono<UserOutput> result = USER.flatMap(service::findByUser);
+        Mono<UserOutput> result = service.findByUserName(new FindUserInput(USER_NAME));
 
         StepVerifier
             .create(result)
@@ -36,11 +37,9 @@ class UserServiceTest {
     }
 
     @Test
-    void findByUserError() {
-        Mono<User> other = User.of(new UserInput(USER_NAME, "wrong"));
-
-        when(repository.findByUserName(USER_NAME)).thenReturn(ENTITY);
-        Mono<UserOutput> result = other.flatMap(service::findByUser);
+    void expectErrorWithEmptyUsername() {
+        when(repository.findByUserName("wrong")).thenReturn(Mono.empty());
+        Mono<UserOutput> result = service.findByUserName(new FindUserInput(""));
 
         StepVerifier
             .create(result)

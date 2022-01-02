@@ -1,15 +1,12 @@
 package com.jpr.maintenance.database.model;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@EqualsAndHashCode
-@Setter
-@Getter
+import java.util.List;
+
+@Data
 @Builder
 @Table("user_motorcycle")
 public class UserMotorcycleEntity {
@@ -17,4 +14,5 @@ public class UserMotorcycleEntity {
     private Long id;
     private MotorcycleEntity motorcycle;
     private String color;
+    private List<PartEntity> parts;
 }

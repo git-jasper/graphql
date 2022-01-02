@@ -2,8 +2,9 @@ package com.jpr.maintenance.database.service;
 
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.repository.UserRepository;
+import com.jpr.maintenance.graphql.model.FindUserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
-import com.jpr.maintenance.validation.model.User;
+import com.jpr.maintenance.validation.ValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -13,9 +14,9 @@ import reactor.core.publisher.Mono;
 public class UserService {
     private final UserRepository userRepository;
 
-    public Mono<UserOutput> findByUser(final User user) {
-        return userRepository.findByUserName(user.username())
-            .flatMap(u -> u.verify(user))
+    public Mono<UserOutput> findByUserName(final FindUserInput input) {
+        return ValidationService.validate(input)
+            .flatMap(i -> userRepository.findByUserName(i.username()))
             .map(UserOutput::of);
     }
 

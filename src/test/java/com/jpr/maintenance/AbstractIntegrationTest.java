@@ -1,4 +1,4 @@
-package com.jpr.maintenance.database.repository;
+package com.jpr.maintenance;
 
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
