@@ -1,0 +1,6 @@
+datasource:
+  host: localhost
+  username: user
+  password: pass
+  database: maintenance
+  driver_class_name: org.postgresql.Driver

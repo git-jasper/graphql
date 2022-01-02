@@ -9,7 +9,8 @@ import org.springframework.r2dbc.core.FetchSpec;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static java.util.Collections.emptyMap;
+import java.util.Map;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -30,13 +31,14 @@ class EntityTemplateUserRepositoryImplTest {
         when(client.sql(anyString())).thenReturn(spec);
         when(spec.bind(anyString(), any())).thenReturn(spec);
         when(spec.fetch()).thenReturn(fetchSpec);
-        when(fetchSpec.first()).thenReturn(Mono.just(emptyMap()));
+        when(fetchSpec.first()).thenReturn(Mono.just(Map.of("id", 1L, "username", "user", "password", "secret", "salt", "salty")));
 
         Mono<UserEntity> result = repository.saveUser(UserEntity.builder().build());
 
         StepVerifier
             .create(result)
-            .expectError(IllegalArgumentException.class)
+            .expectNextMatches(u -> u.getId().equals(1L) && u.getUsername().equals("user") && u.getPassword().equals("secret"))
+            .expectComplete()
             .verify();
     }
 }

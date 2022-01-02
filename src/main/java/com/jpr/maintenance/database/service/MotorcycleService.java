@@ -21,11 +21,6 @@ public class MotorcycleService {
         return motorcycleRepository.save(motorcycle);
     }
 
-    public Mono<MotorcycleEntity> saveMono(Mono<MotorcycleEntity> motorcycle) {
-        return motorcycle
-            .flatMap(motorcycleRepository::save);
-    }
-
     public Mono<Boolean> deleteById(Long id) {
         return motorcycleRepository.removeById(id)
             .map(i -> i == 1);
