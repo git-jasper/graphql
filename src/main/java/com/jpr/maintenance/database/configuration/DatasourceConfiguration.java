@@ -5,7 +5,6 @@ import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -16,7 +15,6 @@ import org.springframework.data.r2dbc.config.AbstractR2dbcConfiguration;
 
 import javax.sql.DataSource;
 
-@Slf4j
 @Setter
 @Configuration
 @PropertySource(factory = YamlPropertySourceFactory.class, value = "classpath:datasource.yml")
