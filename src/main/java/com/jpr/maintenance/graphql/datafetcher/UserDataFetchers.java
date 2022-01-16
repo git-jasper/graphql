@@ -31,12 +31,14 @@ public class UserDataFetchers {
         return new DataFetcherWrapper<>(
             "Query",
             "findByUser",
-            dataFetchingEnvironment ->
-                deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
+            dataFetchingEnvironment -> {
+                log.info(dataFetchingEnvironment.getGraphQlContext().toString());
+                return deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
                     .flatMap(e -> serviceCall(e, userService::findByUserName))
                     .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
                     .onErrorResume(handlerFunction())
-                    .toFuture()
+                    .toFuture();
+            }
         );
     }
 
