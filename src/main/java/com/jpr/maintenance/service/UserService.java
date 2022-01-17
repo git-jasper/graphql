@@ -1,4 +1,4 @@
-package com.jpr.maintenance.database.service;
+package com.jpr.maintenance.service;
 
 import com.jpr.maintenance.database.model.UserEntity;
 import com.jpr.maintenance.database.repository.UserRepository;

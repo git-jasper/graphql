@@ -1,12 +1,14 @@
 package com.jpr.maintenance.graphql.datafetcher;
 
 import com.jpr.maintenance.database.model.UserEntity;
-import com.jpr.maintenance.database.service.UserService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.FindUserInput;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
+import com.jpr.maintenance.security.Authority;
+import com.jpr.maintenance.security.SecuredDataFetcher;
+import com.jpr.maintenance.service.UserService;
 import com.jpr.maintenance.validation.model.User;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +33,14 @@ public class UserDataFetchers {
         return new DataFetcherWrapper<>(
             "Query",
             "findByUser",
-            dataFetchingEnvironment -> {
-                log.info(dataFetchingEnvironment.getGraphQlContext().toString());
-                return deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
-                    .flatMap(e -> serviceCall(e, userService::findByUserName))
-                    .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
-                    .onErrorResume(handlerFunction())
-                    .toFuture();
-            }
+            new SecuredDataFetcher<>(Authority.USER,
+                dataFetchingEnvironment ->
+                    deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
+                        .flatMap(e -> serviceCall(e, userService::findByUserName))
+                        .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
+                        .onErrorResume(handlerFunction())
+                        .toFuture()
+            )
         );
     }
 

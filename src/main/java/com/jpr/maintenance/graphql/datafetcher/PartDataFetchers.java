@@ -1,14 +1,10 @@
 package com.jpr.maintenance.graphql.datafetcher;
 
 import com.jpr.maintenance.database.model.PartEntity;
-import com.jpr.maintenance.database.model.UserEntity;
-import com.jpr.maintenance.database.service.PartService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.PartInput;
-import com.jpr.maintenance.graphql.model.UserInput;
-import com.jpr.maintenance.graphql.model.UserOutput;
-import com.jpr.maintenance.validation.model.User;
+import com.jpr.maintenance.service.PartService;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

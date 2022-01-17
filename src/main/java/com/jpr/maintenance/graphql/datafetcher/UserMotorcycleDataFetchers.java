@@ -1,10 +1,10 @@
 package com.jpr.maintenance.graphql.datafetcher;
 
 import com.jpr.maintenance.database.model.UserMotorcycleEntity;
-import com.jpr.maintenance.database.service.UserMotorcycleService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.UserMotorcycleInput;
+import com.jpr.maintenance.service.UserMotorcycleService;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,8 +1,8 @@
 package com.jpr.maintenance.graphql;
 
 import com.jpr.maintenance.database.model.MotorcycleEntity;
-import com.jpr.maintenance.database.service.MotorcycleService;
 import com.jpr.maintenance.graphql.datafetcher.MotorcycleDataFetchers;
+import com.jpr.maintenance.service.MotorcycleService;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
