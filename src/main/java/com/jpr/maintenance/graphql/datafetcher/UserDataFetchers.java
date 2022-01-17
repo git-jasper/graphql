@@ -6,13 +6,12 @@ import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.FindUserInput;
 import com.jpr.maintenance.graphql.model.UserInput;
 import com.jpr.maintenance.graphql.model.UserOutput;
-import com.jpr.maintenance.security.Authority;
-import com.jpr.maintenance.security.SecuredDataFetcher;
+import com.jpr.maintenance.security.model.Authority;
+import com.jpr.maintenance.security.model.SecuredDataFetcher;
 import com.jpr.maintenance.service.UserService;
 import com.jpr.maintenance.validation.model.User;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,7 +21,6 @@ import static com.jpr.maintenance.graphql.GraphQLUtils.serviceCall;
 import static com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider.handlerFunction;
 import static com.jpr.maintenance.util.ReflectionUtil.deserializeToPojo;
 
-@Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class UserDataFetchers {

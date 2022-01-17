@@ -1,4 +1,4 @@
-package com.jpr.maintenance.security;
+package com.jpr.maintenance.security.model;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -6,7 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.jpr.maintenance.security.Authority.NONE;
+import static com.jpr.maintenance.security.model.Authority.NONE;
 
 
 public class AnonymousAuthentication implements Authentication {

@@ -1,4 +1,4 @@
-package com.jpr.maintenance.security;
+package com.jpr.maintenance.security.config;
 
 import graphql.ExecutionInput;
 import graphql.Internal;

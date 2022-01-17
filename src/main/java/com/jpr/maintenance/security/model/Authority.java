@@ -1,4 +1,4 @@
-package com.jpr.maintenance.security;
+package com.jpr.maintenance.security.model;
 
 import org.springframework.security.core.GrantedAuthority;
 

@@ -1,12 +1,13 @@
-package com.jpr.maintenance.security;
+package com.jpr.maintenance.security.config;
 
+import com.jpr.maintenance.security.model.AnonymousAuthentication;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import static com.jpr.maintenance.security.Authority.USER;
+import static com.jpr.maintenance.security.model.Authority.USER;
 import static java.util.Collections.singletonList;
 
 @Component

@@ -1,4 +1,4 @@
-package com.jpr.maintenance.security;
+package com.jpr.maintenance.security.model;
 
 import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetcher;

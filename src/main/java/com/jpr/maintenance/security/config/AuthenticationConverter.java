@@ -1,4 +1,4 @@
-package com.jpr.maintenance.security;
+package com.jpr.maintenance.security.config;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
