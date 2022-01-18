@@ -7,14 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
-import static com.jpr.maintenance.security.model.Authority.NONE;
 
 @EqualsAndHashCode
-public class AnonymousAuthentication implements Authentication {
+public class FailedAuthentication implements Authentication {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(NONE);
+        return Collections.emptyList();
     }
 
     @Override
@@ -29,7 +28,7 @@ public class AnonymousAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return "anonymous";
+        return "failed";
     }
 
     @Override
@@ -43,6 +42,6 @@ public class AnonymousAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return "anonymous";
+        return "failed";
     }
 }

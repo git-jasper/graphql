@@ -1,6 +1,6 @@
 package com.jpr.maintenance.graphql;
 
-import graphql.schema.DataFetcher;
+import com.jpr.maintenance.security.model.SecuredDataFetcher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -9,5 +9,5 @@ import lombok.RequiredArgsConstructor;
 public class DataFetcherWrapper<T> {
     private final String parentType;
     private final String fieldName;
-    private final DataFetcher<T> dataFetcher;
+    private final SecuredDataFetcher<T> dataFetcher;
 }

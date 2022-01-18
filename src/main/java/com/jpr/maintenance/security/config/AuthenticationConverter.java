@@ -1,5 +1,6 @@
 package com.jpr.maintenance.security.config;
 
+import com.jpr.maintenance.security.model.AnonymousAuthentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
@@ -14,6 +15,7 @@ public class AuthenticationConverter implements ServerAuthenticationConverter {
     public Mono<Authentication> convert(ServerWebExchange exchange) {
         return Mono.justOrEmpty(exchange)
             .flatMap(ex -> Mono.justOrEmpty(ex.getRequest().getHeaders().get("Authorization")))
-            .map(h -> new UsernamePasswordAuthenticationToken(h.get(0), "pass"));
+            .map(h -> (Authentication) new UsernamePasswordAuthenticationToken(h.get(0), "pass"))
+            .switchIfEmpty(Mono.defer(() -> Mono.just(new AnonymousAuthentication())));
     }
 }

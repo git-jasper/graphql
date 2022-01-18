@@ -10,12 +10,9 @@ import com.jpr.maintenance.security.model.Authority;
 import com.jpr.maintenance.security.model.SecuredDataFetcher;
 import com.jpr.maintenance.service.UserService;
 import com.jpr.maintenance.validation.model.User;
-import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.CompletableFuture;
 
 import static com.jpr.maintenance.graphql.GraphQLUtils.serviceCall;
 import static com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider.handlerFunction;
@@ -27,27 +24,26 @@ public class UserDataFetchers {
     private final UserService userService;
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<UserOutput>>> getUser() {
+    public DataFetcherWrapper<UserOutput> getUser() {
         return new DataFetcherWrapper<>(
             "Query",
             "findByUser",
-            new SecuredDataFetcher<>(Authority.USER,
-                dataFetchingEnvironment ->
-                    deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
-                        .flatMap(e -> serviceCall(e, userService::findByUserName))
-                        .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
-                        .onErrorResume(handlerFunction())
-                        .toFuture()
+            new SecuredDataFetcher<>(Authority.USER, dataFetchingEnvironment ->
+                deserializeToPojo(dataFetchingEnvironment.getArgument("findUserInput"), FindUserInput.class)
+                    .flatMap(e -> serviceCall(e, userService::findByUserName))
+                    .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
+                    .onErrorResume(handlerFunction())
+                    .toFuture()
             )
         );
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<UserOutput>>> createUser() {
+    public DataFetcherWrapper<UserOutput> createUser() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "createUser",
-            dataFetchingEnvironment ->
+            new SecuredDataFetcher<>(Authority.USER, dataFetchingEnvironment ->
                 deserializeToPojo(dataFetchingEnvironment.getArgument("userInput"), UserInput.class)
                     .flatMap(User::of)
                     .flatMap(UserEntity::of)
@@ -55,21 +51,22 @@ public class UserDataFetchers {
                     .map(m -> GraphQLUtils.<UserOutput>successFun().apply(m))
                     .onErrorResume(handlerFunction())
                     .toFuture()
+            )
         );
     }
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<Boolean>>> deleteUser() {
+    public DataFetcherWrapper<Boolean> deleteUser() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "deleteUser",
-            dataFetchingEnvironment -> {
+            new SecuredDataFetcher<>(Authority.USER, dataFetchingEnvironment -> {
                 String id = dataFetchingEnvironment.getArgument("id");
                 return userService.deleteById(Long.valueOf(id))
                     .map(m -> GraphQLUtils.<Boolean>successFun().apply(m))
                     .onErrorResume(handlerFunction())
                     .toFuture();
-            }
+            })
         );
     }
 }

@@ -4,13 +4,12 @@ import com.jpr.maintenance.database.model.PartEntity;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.PartInput;
+import com.jpr.maintenance.security.model.Authority;
+import com.jpr.maintenance.security.model.SecuredDataFetcher;
 import com.jpr.maintenance.service.PartService;
-import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.CompletableFuture;
 
 import static com.jpr.maintenance.graphql.GraphQLUtils.serviceCall;
 import static com.jpr.maintenance.graphql.exception.ThrowableHandlerProvider.handlerFunction;
@@ -22,16 +21,17 @@ public class PartDataFetchers {
     private final PartService partService;
 
     @Bean
-    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<PartEntity>>> createPart() {
+    public DataFetcherWrapper<PartEntity> createPart() {
         return new DataFetcherWrapper<>(
             "Mutation",
             "createPart",
-            dataFetchingEnvironment ->
+            new SecuredDataFetcher<>(Authority.USER, dataFetchingEnvironment ->
                 deserializeToPojo(dataFetchingEnvironment.getArgument("partInput"), PartInput.class)
                     .flatMap(e -> serviceCall(e, partService::save))
                     .map(m -> GraphQLUtils.<PartEntity>successFun().apply(m))
                     .onErrorResume(handlerFunction())
                     .toFuture()
+            )
         );
     }
 }

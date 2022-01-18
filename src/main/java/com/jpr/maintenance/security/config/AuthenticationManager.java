@@ -1,6 +1,6 @@
 package com.jpr.maintenance.security.config;
 
-import com.jpr.maintenance.security.model.AnonymousAuthentication;
+import com.jpr.maintenance.security.model.FailedAuthentication;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +18,6 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         return Mono.just(authentication)
             .filter(a -> a.getPrincipal().equals("user"))
             .map(a -> (Authentication) new UsernamePasswordAuthenticationToken(a.getPrincipal(), null, singletonList(USER)))
-            .switchIfEmpty(Mono.defer(() -> Mono.just(new AnonymousAuthentication())));
+            .switchIfEmpty(Mono.defer(() -> Mono.just(new FailedAuthentication())));
     }
 }

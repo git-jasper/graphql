@@ -12,6 +12,7 @@ public enum InputValidationError implements ErrorClassification {
     DATA_ACCESS_ERROR(fun("Error occurred while trying to access the database")),
     USER_ACCESS_ERROR(fun("Failed to access user")),
     UNEXPECTED_ERROR(fun("Unexpected error occurred, caused by [%s]")),
+    INSUFFICIENT_AUTHORITY(fun("Missing required authority")),
     AUTHENTICATION_FAILED(fun("Failed to authenticate"));
 
     private final Function<String, String> errorMessageFun;

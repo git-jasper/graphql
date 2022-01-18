@@ -2,10 +2,15 @@ package com.jpr.maintenance.graphql;
 
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.graphql.datafetcher.MotorcycleDataFetchers;
+import com.jpr.maintenance.security.model.Authority;
 import com.jpr.maintenance.service.MotorcycleService;
+import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironmentImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextImpl;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -13,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.jpr.maintenance.model.Brand.DUCATI;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -22,6 +28,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class MotorcycleDataFetchersTest {
+    public static final GraphQLContext CONTEXT = GraphQLContext.of(
+        Map.of(SecurityContext.class, new SecurityContextImpl(
+            new UsernamePasswordAuthenticationToken(
+                "user",
+                "pass",
+                singletonList(Authority.USER))
+        )));
     private MotorcycleService service;
     private MotorcycleDataFetchers motorcycleDataFetchers;
 
@@ -36,6 +49,7 @@ class MotorcycleDataFetchersTest {
         when(service.findById(0L)).thenReturn(Mono.just(MotorcycleEntity.builder().build()));
         Map<String, Object> arguments = Map.of("id", "0");
         var environment = new DataFetchingEnvironmentImpl.Builder()
+            .graphQLContext(CONTEXT)
             .arguments(arguments)
             .build();
         var dataFetcher = motorcycleDataFetchers.getMotorcycleById().getDataFetcher();
@@ -49,6 +63,7 @@ class MotorcycleDataFetchersTest {
         when(service.findById(-1L)).thenReturn(Mono.empty());
         Map<String, Object> arguments = Map.of("id", "-1");
         var environment = new DataFetchingEnvironmentImpl.Builder()
+            .graphQLContext(CONTEXT)
             .arguments(arguments)
             .build();
         var dataFetcher = motorcycleDataFetchers.getMotorcycleById().getDataFetcher();
@@ -77,6 +92,7 @@ class MotorcycleDataFetchersTest {
             "engineSize", 999
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
+            .graphQLContext(CONTEXT)
             .arguments(Map.of("motorcycleInput", map))
             .build();
         var dataFetcher = motorcycleDataFetchers.createMotorcycle().getDataFetcher();
@@ -107,6 +123,7 @@ class MotorcycleDataFetchersTest {
             "motorcycleInput", new HashMap<>()
         );
         var environment = new DataFetchingEnvironmentImpl.Builder()
+            .graphQLContext(CONTEXT)
             .arguments(arguments)
             .build();
         var dataFetcher = motorcycleDataFetchers.createMotorcycle().getDataFetcher();
@@ -123,6 +140,7 @@ class MotorcycleDataFetchersTest {
         when(service.deleteById(0L)).thenReturn(Mono.just(true));
         Map<String, Object> arguments = Map.of("id", "0");
         var environment = new DataFetchingEnvironmentImpl.Builder()
+            .graphQLContext(CONTEXT)
             .arguments(arguments)
             .build();
         var dataFetcher = motorcycleDataFetchers.deleteMotorcycle().getDataFetcher();
