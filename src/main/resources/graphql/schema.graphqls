@@ -1,16 +1,10 @@
 type Query {
     motorcycleById(id: ID!): Motorcycle
-    findByUser(findUserInput: FindUserInput!): User
 }
 
 type Mutation {
     createMotorcycle(motorcycleInput: MotorcycleInput!): Motorcycle
     deleteMotorcycle(id: ID!): Boolean
-    createUserMotorcycle(userMotorcycleInput: UserMotorcycleInput!): UserMotorcycle
-    createPart(partInput: PartInput!): Part
-    createUserMotorcyclePart(userMotorcyclePartInput: UserMotorcyclePartInput!): UserMotorcyclePart
-    createUser(userInput: UserInput!): User
-    deleteUser(id: ID!): Boolean
 }
 
 type Motorcycle {
