@@ -3,12 +3,10 @@ package com.jpr.maintenance.database.service;
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.repository.MotorcycleRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MotorcycleService {
