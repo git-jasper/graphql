@@ -19,6 +19,7 @@
 		<graphql-java-spring-boot-starter.version>2.0</graphql-java-spring-boot-starter.version>
 		<lombok.version>1.18.22</lombok.version>
 		<vavr.version>0.10.4</vavr.version>
+		<federation.version>0.9.0</federation.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -33,6 +34,11 @@
 			<groupId>com.graphql-java</groupId>
 			<artifactId>graphql-java</artifactId>
 			<version>${graphql-java.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.apollographql.federation</groupId>
+			<artifactId>federation-graphql-java-support</artifactId>
+			<version>${federation.version}</version>
 		</dependency>
 <!--		<dependency>-->
 <!--			<groupId>com.graphql-java</groupId>-->

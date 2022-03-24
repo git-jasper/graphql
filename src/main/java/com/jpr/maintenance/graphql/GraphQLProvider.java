@@ -1,5 +1,8 @@
 package com.jpr.maintenance.graphql;
 
+import com.apollographql.federation.graphqljava.Federation;
+import com.apollographql.federation.graphqljava.FederationDirectives;
+import com.apollographql.federation.graphqljava.tracing.FederatedTracingInstrumentation;
 import com.jpr.maintenance.tailrecursion.TailCall;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
@@ -24,6 +27,7 @@ public class GraphQLProvider {
     public GraphQL graphQL(GraphQLSchema schema) {
         return GraphQL
             .newGraphQL(schema)
+            .instrumentation(new FederatedTracingInstrumentation())
             .build();
     }
 
@@ -31,23 +35,31 @@ public class GraphQLProvider {
     public GraphQLSchema buildSchema(RuntimeWiring runtimeWiring) throws IOException {
         ClassPathResource resource = new ClassPathResource("schema.graphqls");
         String sdl = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+
         TypeDefinitionRegistry typeRegistry = new SchemaParser().parse(sdl);
-        SchemaGenerator schemaGenerator = new SchemaGenerator();
-        return schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring);
+
+        return Federation.transform(typeRegistry, runtimeWiring)
+            .fetchEntities(
+                env -> null)
+            .resolveEntityType(
+                env -> null)
+            .build();
     }
 
     @Bean
     public RuntimeWiring buildDataFetcherWiring(List<DataFetcherWrapper<?>> dataFetcherWrappers) {
-        return buildDataFetcherWiringRecursively(
+        RuntimeWiring.Builder builder = buildDataFetcherWiringRecursively(
             RuntimeWiring.newRuntimeWiring(),
             io.vavr.collection.List.ofAll(dataFetcherWrappers)
         ).invoke();
+
+        return builder.build();
     }
 
-    private TailCall<RuntimeWiring> buildDataFetcherWiringRecursively(RuntimeWiring.Builder runtimeWiringBuilder,
+    private TailCall<RuntimeWiring.Builder> buildDataFetcherWiringRecursively(RuntimeWiring.Builder runtimeWiringBuilder,
                                                                       io.vavr.collection.List<DataFetcherWrapper<?>> vavrList) {
         if (vavrList.isEmpty()) {
-            return done(runtimeWiringBuilder.build());
+            return done(runtimeWiringBuilder);
         } else {
             DataFetcherWrapper<?> wrapper = vavrList.head();
             return () -> buildDataFetcherWiringRecursively(
