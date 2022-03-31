@@ -1,13 +1,11 @@
 package com.jpr.maintenance.graphql;
 
 import com.apollographql.federation.graphqljava.Federation;
-import com.apollographql.federation.graphqljava.FederationDirectives;
 import com.apollographql.federation.graphqljava.tracing.FederatedTracingInstrumentation;
 import com.jpr.maintenance.tailrecursion.TailCall;
 import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import org.springframework.context.annotation.Bean;

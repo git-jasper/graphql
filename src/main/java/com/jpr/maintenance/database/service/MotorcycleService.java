@@ -2,9 +2,11 @@ package com.jpr.maintenance.database.service;
 
 import com.jpr.maintenance.database.model.MotorcycleEntity;
 import com.jpr.maintenance.database.repository.MotorcycleRepository;
+import com.jpr.maintenance.model.Brand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -15,6 +17,10 @@ public class MotorcycleService {
 
     public Mono<MotorcycleEntity> findById(Long id) {
         return motorcycleRepository.findById(id);
+    }
+
+    public Flux<MotorcycleEntity> findByBrand(Brand brand) {
+        return motorcycleRepository.findAllByBrand(brand);
     }
 
     public Mono<MotorcycleEntity> save(MotorcycleEntity motorcycle) {

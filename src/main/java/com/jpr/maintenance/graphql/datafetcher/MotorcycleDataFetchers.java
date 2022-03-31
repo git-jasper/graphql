@@ -5,11 +5,13 @@ import com.jpr.maintenance.database.service.MotorcycleService;
 import com.jpr.maintenance.graphql.DataFetcherWrapper;
 import com.jpr.maintenance.graphql.GraphQLUtils;
 import com.jpr.maintenance.graphql.model.MotorcycleInput;
+import com.jpr.maintenance.model.Brand;
 import graphql.execution.DataFetcherResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.jpr.maintenance.graphql.GraphQLUtils.saveEntity;
@@ -30,6 +32,22 @@ public class MotorcycleDataFetchers {
                 String id = dataFetchingEnvironment.getArgument("id");
                 return motorcycleService.findById(Long.valueOf(id))
                     .map(m -> GraphQLUtils.<MotorcycleEntity>successFun().apply(m))
+                    .onErrorResume(handlerFunction())
+                    .toFuture();
+            }
+        );
+    }
+
+    @Bean
+    public DataFetcherWrapper<CompletableFuture<DataFetcherResult<List<MotorcycleEntity>>>> getMotorcycleByBrand() {
+        return new DataFetcherWrapper<>(
+            "Query",
+            "motorcycleByBrand",
+            dataFetchingEnvironment -> {
+                String brand = dataFetchingEnvironment.getArgument("brand");
+                return motorcycleService.findByBrand(Brand.fromString(brand))
+                    .collectList()
+                    .map(m -> GraphQLUtils.<List<MotorcycleEntity>>successFun().apply(m))
                     .onErrorResume(handlerFunction())
                     .toFuture();
             }

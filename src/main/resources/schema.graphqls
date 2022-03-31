@@ -1,5 +1,6 @@
 type Query {
     motorcycleById(id: ID!): Motorcycle
+    motorcycleByBrand(brand: Brand!): [Motorcycle]
     findByUser(findUserInput: FindUserInput!): User
 }
 
